@@ -12,6 +12,7 @@ IMAGE_LINGUAS = " "
 # qt6 examples
 
 IMAGE_INSTALL_append = " \
+        wayland-ivi-extension ilm-manager \
         qtbase-examples qt3d-examples qtwayland-examples qtquick3d-examples \
        "
 
