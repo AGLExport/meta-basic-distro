@@ -31,18 +31,6 @@ IMAGE_INSTALL_append = " \
     ${QOS_USER_PKGS} \
 "
 
-# Renesas Basic packages for 32bit
-BASIC_32BIT_PKGS = " \
-    lib32-coreutils \
-    lib32-libstdc++ \
-    lib32-optee-client \
-"
-
-# Installation for 32bit packages
-IMAGE_INSTALL_append = " \
-    ${@oe.utils.conditional("USE_32BIT_PKGS", "1", "${BASIC_32BIT_PKGS}", "", d)} \
-"
-
 # Kernel modules of ICCOM
 ICCOM_KERNEL_PKGS = " \
     kernel-module-iccom-mfis \
