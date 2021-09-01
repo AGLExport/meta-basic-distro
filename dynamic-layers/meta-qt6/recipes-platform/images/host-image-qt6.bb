@@ -1,7 +1,7 @@
 SUMMARY = "A very basic Wayland image with a qt6"
 LICENSE = "MIT"
 
-require host-image-weston.bb
+require recipes-platform/images/host-image-weston.bb
 
 IMAGE_INSTALL_append = " \
         packagegroup-qt6-modules \
