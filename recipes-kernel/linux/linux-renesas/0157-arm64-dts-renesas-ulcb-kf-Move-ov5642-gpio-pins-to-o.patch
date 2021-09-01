@@ -1,0 +1,53 @@
+From c752e65defe6718c20e1b25f4f34ab0d7ea0d0ee Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 28 May 2021 02:56:58 +0300
+Subject: [PATCH 60/61] arm64: dts: renesas: ulcb-kf: Move ov5642 gpio pins to
+ ov5642 node
+
+This moves CMOS camera pwdn and resetb GPIO pins
+to the ov5642 device node which helps to avoid
+the following kernel warnings:
+
+  ov5642 22-003c: resetb gpio is not assigned!
+  ov5642 22-003c: pwdn gpio is not assigned!
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 8b112da..9fefd99 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -757,6 +757,8 @@
+ 				reg = <0x3c>;
+ 				clocks = <&camera_clk>;
+ 				clock-names = "mclk";
++				pwdn-gpios = <&gpio_exp_76 8 GPIO_ACTIVE_HIGH>;
++				resetb-gpios = <&gpio_exp_76 9 GPIO_ACTIVE_HIGH>;
+ 
+ 				port@0 {
+ 					cmos_camera_out: endpoint {
+@@ -845,18 +847,6 @@
+ 			output-high;
+ 			line-name = "Video-A A1";
+ 		};
+-		cmos_pwdn {
+-			gpio-hog;
+-			gpios = <8 GPIO_ACTIVE_HIGH>;
+-			output-high;
+-			line-name = "CMOS PWDN";
+-		};
+-		cmos_rst {
+-			gpio-hog;
+-			gpios = <9 GPIO_ACTIVE_HIGH>;
+-			output-high;
+-			line-name = "CMOS RST";
+-		};
+ 		/* pin 12 - CAM_CLK */
+ 		rpi_cam_io_1 {
+ 			gpio-hog;
+-- 
+2.7.4
+

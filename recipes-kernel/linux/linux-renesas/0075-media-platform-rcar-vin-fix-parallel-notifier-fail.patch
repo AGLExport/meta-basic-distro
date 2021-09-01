@@ -1,0 +1,29 @@
+From 49b5ab96331ac12b4cfd6e3e6634691cc252cd73 Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Tue, 29 Oct 2019 18:49:10 +0300
+Subject: [PATCH] media: platform: rcar-vin: fix parallel notifier fail
+
+The parallel master notifier is not necesessary, hence
+skip WARN and fail exit
+
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+---
+ drivers/media/platform/rcar-vin/rcar-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
+index 49ebbfb..7d6f4b8 100644
+--- a/drivers/media/platform/rcar-vin/rcar-core.c
++++ b/drivers/media/platform/rcar-vin/rcar-core.c
+@@ -149,7 +149,7 @@ static int rvin_group_link_notify(struct media_link *link, u32 flags,
+ 	vin = container_of(vdev, struct rvin_dev, vdev);
+ 	master_id = rvin_group_id_to_master(vin->id);
+ 
+-	if (WARN_ON(!group->vin[master_id])) {
++	if (!vin->parallel && WARN_ON(!group->vin[master_id])) {
+ 		ret = -ENODEV;
+ 		goto out;
+ 	}
+-- 
+2.7.4
+

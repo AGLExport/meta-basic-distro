@@ -1,0 +1,49 @@
+From daad2a1e966a1caac913442a4d285ca3859906d3 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 18 Jan 2019 23:24:15 +0300
+Subject: [PATCH 1/3] arm64: dts: renesas: ulcb: Make AK4613 sound device name
+ consistent
+
+This makes AK4613 sound device name consistent with other sound
+devices throughout all ULCB boards. This also helps to avoid
+pulseaudio issues since it expects the "ak4613" name.
+
+Probably AK4613 sound card should be renamed on other boards as
+well for consistency since the "rcar-sound" name is misleading
+especially when multiple sound cards are connected.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 2 +-
+ arch/arm64/boot/dts/renesas/ulcb.dtsi    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index d5fac4d..d5ada3a 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -147,7 +147,7 @@
+ 	/delete-node/sound;
+ 	sound_card: sound@1 {
+ 		compatible = "audio-graph-card";
+-		label = "rcar-sound";
++		label = "ak4613";
+ 
+ 		dais = <&rsnd_port2	/* ak4613 */
+ 			&rsnd_port3	/* HDMI0  */
+diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+index 0fd3ce6..f775ecfc 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+@@ -104,7 +104,7 @@
+ 
+ 	sound_card: sound {
+ 		compatible = "audio-graph-card";
+-		label = "rcar-sound";
++		label = "ak4613";
+ 
+ 		dais = <&rsnd_port0	/* ak4613 */
+ 			&rsnd_port1	/* HDMI0  */
+-- 
+2.7.4
+

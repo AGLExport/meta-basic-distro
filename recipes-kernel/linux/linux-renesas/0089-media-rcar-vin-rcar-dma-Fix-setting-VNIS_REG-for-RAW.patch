@@ -1,0 +1,45 @@
+From 6b7763cd31699f1cbc96e35020dce78b0a42c083 Mon Sep 17 00:00:00 2001
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Date: Fri, 2 Oct 2020 12:26:52 +0200
+Subject: [PATCH] media: rcar-vin: rcar-dma: Fix setting VNIS_REG for RAW8
+ formats
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+pixelformat in vin priv structure holds V4L2_PIX_FMT_* and not
+MEDIA_BUS_FMT_* so make sure we check against V4L2_PIX_FMT_* formats
+while setting the VNIS_REG.
+
+Fixes: 8c3e0f67df6c9 ("media: rcar-vin: Extend RAW8 support to all RGB layouts")
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/rcar-vin/rcar-dma.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index b72520a..b01c5fe 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -739,10 +739,10 @@ static void rvin_crop_scale_comp(struct rvin_dev *vin)
+ 	 * format in 2 pixel unit hence configure VNIS_REG as stride / 2.
+ 	 */
+ 	switch (vin->format.pixelformat) {
+-	case MEDIA_BUS_FMT_SBGGR8_1X8:
+-	case MEDIA_BUS_FMT_SGBRG8_1X8:
+-	case MEDIA_BUS_FMT_SGRBG8_1X8:
+-	case MEDIA_BUS_FMT_SRGGB8_1X8:
++	case V4L2_PIX_FMT_SBGGR8:
++	case V4L2_PIX_FMT_SGBRG8:
++	case V4L2_PIX_FMT_SGRBG8:
++	case V4L2_PIX_FMT_SRGGB8:
+ 		stride /= 2;
+ 		break;
+ 	default:
+-- 
+2.7.4
+

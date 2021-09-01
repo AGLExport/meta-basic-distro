@@ -1,0 +1,78 @@
+From 9ceea44900c0da051c8de3211b2ed60d4942e8df Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Sun, 16 May 2021 02:27:16 +0300
+Subject: [PATCH 56/61] staging: most: Fix dim2 device usage
+
+Since device structure has been removed from most interface by commit
+723de0f9171e ("staging: most: remove device from interface structure"),
+DIM2 fails to initialize with the following error:
+
+  "kobject (0000000027d808c6): tried to init an initialized object, something is seriously wrong."
+
+The error is caused by reusing the same device structure by most interface
+and dim2_state device. This fixes most interface device name and drops
+dim2_state device altogether, adding dim2_state sysfs group to the most
+interface device instead.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/staging/most/dim2/dim2.c  |  2 +-
+ drivers/staging/most/dim2/sysfs.c | 11 +++++------
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
+index fc74859..6127f27 100644
+--- a/drivers/staging/most/dim2/dim2.c
++++ b/drivers/staging/most/dim2/dim2.c
+@@ -854,7 +854,7 @@ static int dim2_probe(struct platform_device *pdev)
+ 	dev->most_iface.request_netinfo = request_netinfo;
+ 	dev->most_iface.driver_dev = &pdev->dev;
+ 	dev->most_iface.dev = &dev->dev;
+-	dev->dev.init_name = "dim2_state";
++	dev->dev.init_name = dev->name;
+ 	dev->dev.parent = &pdev->dev;
+ 
+ 	ret = most_register_interface(&dev->most_iface);
+diff --git a/drivers/staging/most/dim2/sysfs.c b/drivers/staging/most/dim2/sysfs.c
+index c85b2cd..b9f03d9 100644
+--- a/drivers/staging/most/dim2/sysfs.c
++++ b/drivers/staging/most/dim2/sysfs.c
+@@ -13,7 +13,7 @@
+ #include "sysfs.h"
+ #include <linux/device.h>
+ 
+-static ssize_t state_show(struct device *dev, struct device_attribute *attr,
++static ssize_t dim2_state_show(struct device *dev, struct device_attribute *attr,
+ 			  char *buf)
+ {
+ 	bool state = dim2_sysfs_get_state_cb();
+@@ -21,10 +21,10 @@ static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+ 	return sprintf(buf, "%s\n", state ? "locked" : "");
+ }
+ 
+-static DEVICE_ATTR_RO(state);
++static DEVICE_ATTR_RO(dim2_state);
+ 
+ static struct attribute *dev_attrs[] = {
+-	&dev_attr_state.attr,
++	&dev_attr_dim2_state.attr,
+ 	NULL,
+ };
+ 
+@@ -39,11 +39,10 @@ static const struct attribute_group *dev_attr_groups[] = {
+ 
+ int dim2_sysfs_probe(struct device *dev)
+ {
+-	dev->groups = dev_attr_groups;
+-	return device_register(dev);
++	return sysfs_create_groups(&dev->kobj, dev_attr_groups);
+ }
+ 
+ void dim2_sysfs_destroy(struct device *dev)
+ {
+-	device_unregister(dev);
++	sysfs_remove_groups(&dev->kobj, dev_attr_groups);
+ }
+-- 
+2.7.4
+

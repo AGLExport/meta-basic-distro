@@ -1,0 +1,45 @@
+From 492d50ad6590a3483b50689b874dc558a130d2da Mon Sep 17 00:00:00 2001
+From: wata2ki <wata2ki@gmail.com>
+Date: Sat, 28 Aug 2021 22:28:20 +0900
+Subject: [PATCH] Disable non use functions
+
+Signed-off-by: wata2ki <wata2ki@gmail.com>
+---
+ arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts | 2 +-
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi         | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts b/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
+index d2b4936b651a..e882b880a928 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
+@@ -26,7 +26,7 @@ endpoint {
+ };
+ 
+ &lvds0 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	ports {
+ 		port@1 {
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 9fefd991106d..16d791c15a75 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -934,11 +934,11 @@ &pcie_bus_clk {
+ };
+ 
+ &pciec0 {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &pciec1 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	pcie3v3-supply = <&mpcie_3v3>;
+ 	pcie1v8-supply = <&mpcie_1v8>;
+-- 
+2.25.1
+

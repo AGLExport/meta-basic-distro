@@ -1,0 +1,40 @@
+From 541d3a7d0ba63404d5bb539042d90d93e9236e32 Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Tue, 15 Sep 2020 15:10:02 +0300
+Subject: [PATCH] media: platform: rcar-vin: do not reset IFMD VIN
+
+Do not reset VIN ip that holds IFMD since this breaks other
+VIN ip blocks
+---
+ drivers/media/platform/rcar-vin/rcar-dma.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index 7257a80..5cd1ee9 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -1614,8 +1614,10 @@ static void rvin_stop_streaming(struct vb2_queue *vq)
+ 			usleep_range(10, 15);
+ 			timeout--;
+ 		}
++#if 0
+ 		reset_control_assert(vin->rstc);
+ 		reset_control_deassert(vin->rstc);
++#endif
+ 	}
+ 
+ 	/* Free scratch buffer. */
+@@ -1700,8 +1702,10 @@ void rvin_suspend_stop_streaming(struct rvin_dev *vin)
+ 			usleep_range(10, 15);
+ 			timeout--;
+ 		}
++#if 0
+ 		reset_control_assert(vin->rstc);
+ 		reset_control_deassert(vin->rstc);
++#endif
+ 	}
+ 
+ 	vin->suspend = true;
+-- 
+2.7.4
+

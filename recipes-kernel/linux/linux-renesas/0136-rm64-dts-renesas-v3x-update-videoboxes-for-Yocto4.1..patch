@@ -1,0 +1,4888 @@
+From 4d624a9f89ec83ee280d02f2f89ee2bf581983f7 Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Wed, 21 Oct 2020 15:21:47 +0300
+Subject: [PATCH 4/5] rm64: dts: renesas: v3x: update videoboxes for Yocto4.1.0
+
+This updates Videbox boards DT for Yocto4.1.0
+
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+[valentine: fixed vb-fdplink-output port routing, and compilation warnings]
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/Makefile               |  15 +
+ .../boot/dts/renesas/r8a77970-es1-v3msk-vbm-v2.dts |  14 +
+ .../boot/dts/renesas/r8a77970-es1-v3msk-vbm-v3.dts |  14 +
+ .../boot/dts/renesas/r8a77970-es1-v3msk-vbm.dts    |  14 +
+ .../boot/dts/renesas/r8a77970-es1-v3msk-view.dts   |  14 +
+ .../boot/dts/renesas/r8a77970-v3msk-vbm-v2.dts     |  79 ++
+ .../boot/dts/renesas/r8a77970-v3msk-vbm-v3.dts     |  35 +
+ arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm.dts | 370 ++++++++++
+ .../arm64/boot/dts/renesas/r8a77970-v3msk-view.dts | 192 +++++
+ .../boot/dts/renesas/r8a77980-v3hsk-vb-4ch.dts     | 553 ++++++++++++++
+ .../boot/dts/renesas/r8a77980-v3hsk-vb-8ch.dts     | 793 +++++++++++++++++++++
+ .../dts/renesas/r8a77980-v3hsk-vb-gmsl-8ch.dts     | 713 ++++++++++++++++++
+ .../dts/renesas/r8a77980-v3hsk-vb-gmsl2-2x2.dts    | 583 +++++++++++++++
+ .../boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-4.dts | 538 ++++++++++++++
+ .../boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-8.dts | 741 +++++++++++++++++++
+ arch/arm64/boot/dts/renesas/vb-fdplink-output.dtso |  65 ++
+ 16 files changed, 4733 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v2.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v3.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-view.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v2.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v3.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77970-v3msk-view.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-4ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-8ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl-8ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-2x2.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-4.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-8.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/vb-fdplink-output.dtso
+
+diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+index e3d789d..d9fb8f3 100644
+--- a/arch/arm64/boot/dts/renesas/Makefile
++++ b/arch/arm64/boot/dts/renesas/Makefile
+@@ -29,6 +29,17 @@ dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-eagle-function.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-es1-eagle.dtb r8a77970-es1-eagle-function.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-es1-v3msk.dtb
++dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-v3msk-vbm.dtb r8a77970-es1-v3msk-vbm.dtb
++dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-v3msk-vbm-v2.dtb r8a77970-es1-v3msk-vbm-v2.dtb
++dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-v3msk-vbm-v3.dtb r8a77970-es1-v3msk-vbm-v3.dtb
++dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-v3msk-view.dtb r8a77970-es1-v3msk-view.dtb
++
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-4ch.dtb r8a77980-v3hsk-vb-8ch.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl-8ch.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl2-2x2.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl2-4.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl2-8.dtb
++
+ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-condor.dtb
+ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-v3hsk.dtb
+ 
+@@ -42,6 +53,10 @@ ulcb-kf-dtbo := ulcb-kf-cn11.dtbo ulcb-kf-most.dtbo ulcb-kf-sd3.dtbo \
+ 		ulcb-kf-panel-mitsubishi-aa121td01-1280x800.dtbo \
+ 		ulcb-kf-imx219.dtbo
+ 
++vb-dtbo := vb-fdplink-output.dtbo
++
+ dtb-$(CONFIG_ARCH_R8A7795) += $(ulcb-kf-dtbo)
+ dtb-$(CONFIG_ARCH_R8A7796) += $(ulcb-kf-dtbo)
+ dtb-$(CONFIG_ARCH_R8A77965) += $(ulcb-kf-dtbo)
++dtb-$(CONFIG_ARCH_R8A77970) += $(vb-dtbo)
++dtb-$(CONFIG_ARCH_R8A77980) += $(vb-dtbo)
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v2.dts b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v2.dts
+new file mode 100644
+index 0000000..10c2cd1
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v2.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini V2 board on r8a77970 ES1.0
++ *
++ * Copyright (C) 2018-2020 Renesas Electronics Corp.
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-vbm-v2.dts"
++#include "r8a77970-es1.dtsi"
++
++/ {
++	model = "Renesas V3MSK Videobox Mini V2 board based on r8a77970 ES1.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v3.dts b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v3.dts
+new file mode 100644
+index 0000000..d1e39cb
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm-v3.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini V2 board on r8a77970 ES1.0
++ *
++ * Copyright (C) 2018-2020 Renesas Electronics Corp.
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-vbm-v3.dts"
++#include "r8a77970-es1.dtsi"
++
++/ {
++	model = "Renesas V3MSK Videobox Mini V3 board based on r8a77970 ES1.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm.dts b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm.dts
+new file mode 100644
+index 0000000..7a10768
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-vbm.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini board on r8a77970 ES1.0
++ *
++ * Copyright (C) 2018-2020 Renesas Electronics Corp.
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-vbm.dts"
++#include "r8a77970-es1.dtsi"
++
++/ {
++	model = "Renesas V3MSK Videobox Mini board based on r8a77970 ES1.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-view.dts b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-view.dts
+new file mode 100644
+index 0000000..7604e19
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-es1-v3msk-view.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK View board on r8a77970 ES1.0
++ *
++ * Copyright (C) 2018-2020 Renesas Electronics Corp.
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-view.dts"
++#include "r8a77970-es1.dtsi"
++
++/ {
++	model = "Renesas V3MSK View board based on r8a77970 ES1.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v2.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v2.dts
+new file mode 100644
+index 0000000..562a492
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v2.dts
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini board V2 on r8a77970
++ *
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-vbm.dts"
++
++/ {
++	model = "Renesas V3MSK Videobox Mini board V2 based on r8a77970";
++
++	leds {
++		compatible = "gpio-leds";
++
++		led5 {
++			label = "board:status";
++			gpios = <&gpio3 16 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++		};
++	};
++};
++
++&gpio0 {
++	/delete-node/can0stby;
++
++	can0_stby {
++		gpio-hog;
++		gpios = <12 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "CAN0STBY";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <14 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "CAN1STBY";
++	};
++};
++
++&msiof1 {
++	pinctrl-0 = <&msiof1_pins>;
++	pinctrl-names = "default";
++	cs-gpios = <&gpio3 3 0>;
++
++	status = "okay";
++	spidev@0 {
++		compatible = "renesas,sh-msiof";
++		reg = <0>;
++		spi-max-frequency = <66666666>;
++	};
++};
++
++&msiof2 {
++	pinctrl-0 = <&msiof2_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++	slave;
++};
++
++&pfc {
++	msiof1_pins: msiof1 {
++		groups = "msiof1_clk", "msiof1_txd", "msiof1_rxd";
++		function = "msiof1";
++	};
++
++	msiof2_pins: msiof2 {
++		groups = "msiof2_clk", "msiof2_sync", "msiof2_txd", "msiof2_rxd";
++		function = "msiof2";
++	};
++};
++
++&scif3 {
++	/* pin conflict with msiof2 */
++	/* set R240 and remove R241 before enabling */
++	status = "disabled";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v3.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v3.dts
+new file mode 100644
+index 0000000..fcde09b
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm-v3.dts
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini board V3 on r8a77970
++ *
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk-vbm-v2.dts"
++
++
++/ {
++	model = "Renesas V3MSK Videobox Mini board V3 based on r8a77970";
++};
++
++&gpio0 {
++	can0_load {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "can0_120R_load";
++	};
++};
++
++&gpio1 {
++	ex_v3m {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "ExV3M";
++	};
++};
++
++&gpio2 {
++	/delete-node/can0_load;
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm.dts
+new file mode 100644
+index 0000000..805b9a2
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-vbm.dts
+@@ -0,0 +1,370 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK Videobox Mini board on r8a77970
++ *
++ * Copyright (C) 2017-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3MSK Videobox Mini board based on r8a77970";
++
++	aliases {
++		serial1 = &scif3;
++	};
++
++	vdd_cam0: regulator-vdd-cam0 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1: regulator-vdd-cam1 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 9 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2: regulator-vdd-cam2 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3: regulator-vdd-cam3 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++	multi-master;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			deser@2c {
++				compatible = "maxim,max9286", "ti,ub9x4";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x2c 0x3a>;
++				reg-names = "max9286", "ub9x4";
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				shutdown-gpios = <&gpio_exp_6c 13 GPIO_ACTIVE_LOW>;
++				ti,csi-rate = <700>;
++
++				poc0-supply = <&vdd_cam0>;
++				poc1-supply = <&vdd_cam1>;
++				poc2-supply = <&vdd_cam2>;
++				poc3-supply = <&vdd_cam3>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++
++			gpio_exp_6c: gpio@6c {
++				compatible = "maxim,max7325";
++				reg = <0x6c>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				virq {
++					gpio-hog;
++					gpios = <5 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "VIRQ";
++				};
++				des_cfg {
++					gpio-hog;
++					gpios = <6 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CNFG0";
++				};
++				pwr_shdn {
++					gpio-hog;
++					gpios = <14 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "PWR_SHDN";
++				};
++				fpdl_shdn {
++					gpio-hog;
++					gpios = <15 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "FPDL_SHDN";
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			/* fan node - lm96063 */
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++	};
++};
++
++&gpio0 {
++	can0stby {
++		gpio-hog;
++		gpios = <12 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "can1_120R_load";
++	};
++};
++
++&gpio2 {
++	can0_load {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "can0_120R_load";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <8 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <9 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk-view.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-view.dts
+new file mode 100644
+index 0000000..430669c
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk-view.dts
+@@ -0,0 +1,192 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3MSK View board on r8a77970
++ *
++ * Copyright (C) 2017-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77970-v3msk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3MSK View board based on r8a77970";
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&max9286_out0>;
++			};
++		};
++	};
++};
++
++&i2c3 {
++	pinctrl-0 = <&i2c3_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++
++	max9286@6c {
++		compatible = "maxim,max9286";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x6c>;
++		regs = <0x0c 0x0d 0x0e 0x0f>;
++		shutdown-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				max9286_in0: endpoint {
++					remote-endpoint = <&camera_out0>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++				max9286_in1: endpoint {
++					remote-endpoint = <&camera_out1>;
++				};
++			};
++
++			port@2 {
++				reg = <2>;
++				max9286_in2: endpoint {
++					remote-endpoint = <&camera_out2>;
++				};
++			};
++
++			port@3 {
++				reg = <3>;
++				max9286_in3: endpoint {
++					remote-endpoint = <&camera_out3>;
++				};
++			};
++
++			port@4 {
++				reg = <4>;
++				max9286_out0: endpoint {
++					clock-lanes = <0>;
++					data-lanes = <1 2 3 4>;
++					remote-endpoint = <&csi40_in>;
++				};
++			};
++		};
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			camera@60 {
++				compatible = LVDS_CAMERA;
++				reg = <0x60 0x0c>;
++
++				port {
++					camera_out0: endpoint {
++						remote-endpoint = <&max9286_in0>;
++					};
++				};
++			};
++		};
++
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++
++			camera@61 {
++				compatible = LVDS_CAMERA;
++				reg = <0x61 0x0d>;
++
++				port {
++					camera_out1: endpoint {
++						remote-endpoint = <&max9286_in1>;
++					};
++				};
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			camera@62 {
++				compatible = LVDS_CAMERA;
++				reg = <0x62 0x0e>;
++
++				port {
++					camera_out2: endpoint {
++						remote-endpoint = <&max9286_in2>;
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			camera@63 {
++				compatible = LVDS_CAMERA;
++				reg = <0x63 0x0f>;
++
++				port {
++					camera_out3: endpoint {
++						remote-endpoint = <&max9286_in3>;
++					};
++				};
++			};
++		};
++	};
++};
++
++&gpio2 {
++	gpio_pwdn1 {
++		gpio-hog;
++		gpios = <12 GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "GPIO_PWDN1#";
++	};
++};
++
++&pfc {
++	i2c3_pins: i2c3 {
++		groups = "i2c3";
++		function = "i2c3";
++	};
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-4ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-4ch.dts
+new file mode 100644
+index 0000000..377f648
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-4ch.dts
+@@ -0,0 +1,553 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK 4ch Videobox board on r8a77980
++ *
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 4ch Videobox board based on r8a77980";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	cs2300_ref_clk: cs2300_ref_clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	vdd_cam0: regulator-vdd-cam0 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1: regulator-vdd-cam1 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 9 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2: regulator-vdd-cam2 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3: regulator-vdd-cam3 {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_6c 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++	multi-master;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			cs2300: clk_multiplier@4e {
++				#clock-cells = <0>;
++				compatible = "cirrus,cs2300-cp";
++				reg = <0x4e>;
++				clocks = <&cs2300_ref_clk>;
++				clock-names = "clk_in";
++
++				assigned-clocks = <&cs2300>;
++				assigned-clock-rates = <25000000>;
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@3a {
++				compatible = "ti,ub9x4";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x3a>;
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				ti,vc-map = <0x3210>;
++				ti,csi1-links = <0 1 2 3>;
++				ti,csi-rate = <1200>;
++				shutdown-gpios = <&gpio_exp_6c 13 GPIO_ACTIVE_LOW>;
++
++				poc0-supply = <&vdd_cam0>;
++				poc1-supply = <&vdd_cam1>;
++				poc2-supply = <&vdd_cam2>;
++				poc3-supply = <&vdd_cam3>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			gpio_exp_6c: gpio@6c {
++				compatible = "maxim,max7325";
++				reg = <0x6c>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				ch0_virq {
++					gpio-hog;
++					gpios = <5 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_VIRQ";
++				};
++				ch0_des_cfg0 {
++					gpio-hog;
++					gpios = <6 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_CNFG0";
++				};
++				ch0_des_cfg1 {
++					gpio-hog;
++					gpios = <7 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_CNFG1";
++				};
++			};
++		};
++
++		i2c@4 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <4>;
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			/* fan node - lm96063 */
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			/* ext connector nodes here */
++		};
++	};
++};
++
++&gpio0 {
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <1 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++
++	cam_pwr_en {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIPWR_En";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <0 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	can0_load {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0Loff";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	vi1_gpioext_rst {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP1_RST";
++	};
++};
++
++&gpio3 {
++	vi0_gpioext_rst {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP0_RST";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-8ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-8ch.dts
+new file mode 100644
+index 0000000..4198024
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-8ch.dts
+@@ -0,0 +1,793 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK 8ch Videobox board on r8a77980
++ *
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch Videobox board based on r8a77980";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	cs2300_ref_clk: cs2300_ref_clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	vdd_cam0_a: regulator-vdd-cam0-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_a_6c 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_a: regulator-vdd-cam1-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_a_6c 9 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2_a: regulator-vdd-cam2-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_a_6c 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3_a: regulator-vdd-cam3-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_a_6c 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam0_b: regulator-vdd-cam0-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_b_6c 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_b: regulator-vdd-cam1-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_b_6c 9 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2_b: regulator-vdd-cam2-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_b_6c 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3_b: regulator-vdd-cam3-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_b_6c 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&csi41 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi41_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out1>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++	multi-master;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			cs2300: clk_multiplier@4e {
++				#clock-cells = <0>;
++				compatible = "cirrus,cs2300-cp";
++				reg = <0x4e>;
++				clocks = <&cs2300_ref_clk>;
++				clock-names = "clk_in";
++
++				assigned-clocks = <&cs2300>;
++				assigned-clock-rates = <25000000>;
++			};
++
++			gpio_exp_b_6c: gpio@6c {
++				compatible = "maxim,max7325";
++				reg = <0x6c>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				ch1_virq {
++					gpio-hog;
++					gpios = <5 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH1_VIRQ";
++				};
++				ch1_des_cfg0 {
++					gpio-hog;
++					gpios = <6 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH1_CNFG0";
++				};
++				ch1_des_cfg1 {
++					gpio-hog;
++					gpios = <7 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH1_CNFG1";
++				};
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@3a {
++				compatible = "ti,ub9x4";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x3a>;
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				ti,csi-rate = <1200>;
++				shutdown-gpios = <&gpio_exp_a_6c 13 GPIO_ACTIVE_LOW>;
++
++				poc0-supply = <&vdd_cam0_a>;
++				poc1-supply = <&vdd_cam1_a>;
++				poc2-supply = <&vdd_cam2_a>;
++				poc3-supply = <&vdd_cam3_a>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			gpio_exp_a_6c: gpio@6c {
++				compatible = "maxim,max7325";
++				reg = <0x6c>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				ch0_virq {
++					gpio-hog;
++					gpios = <5 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_VIRQ";
++				};
++				ch0_des_cfg0 {
++					gpio-hog;
++					gpios = <6 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_CNFG0";
++				};
++				ch0_des_cfg1 {
++					gpio-hog;
++					gpios = <7 GPIO_ACTIVE_HIGH>;
++					input;
++					line-name = "CH0_CNFG1";
++				};
++			};
++		};
++
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++
++			deser@3a {
++				compatible = "ti,ub9x4";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x3a>;
++				regs = <0x1c 0x1d 0x1e 0x1f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				ti,csi-rate = <1200>;
++				shutdown-gpios = <&gpio_exp_b_6c 13 GPIO_ACTIVE_LOW>;
++
++				poc0-supply = <&vdd_cam0_b>;
++				poc1-supply = <&vdd_cam1_b>;
++				poc2-supply = <&vdd_cam2_b>;
++				poc3-supply = <&vdd_cam3_b>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in4: endpoint {
++							remote-endpoint = <&camera_out4>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in5: endpoint {
++							remote-endpoint = <&camera_out5>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in6: endpoint {
++							remote-endpoint = <&camera_out6>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in7: endpoint {
++							remote-endpoint = <&camera_out7>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out1: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi41_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@64 {
++						compatible = LVDS_CAMERA;
++						reg = <0x64 0x1c>;
++
++						port {
++							camera_out4: endpoint {
++								remote-endpoint = <&deser_in4>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@65 {
++						compatible = LVDS_CAMERA;
++						reg = <0x65 0x1d>;
++
++						port {
++							camera_out5: endpoint {
++								remote-endpoint = <&deser_in5>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@66 {
++						compatible = LVDS_CAMERA;
++						reg = <0x66 0x1e>;
++
++						port {
++							camera_out6: endpoint {
++								remote-endpoint = <&deser_in6>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@67 {
++						compatible = LVDS_CAMERA;
++						reg = <0x67 0x1f>;
++
++						port {
++							camera_out7: endpoint {
++								remote-endpoint = <&deser_in7>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@4 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <4>;
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			/* fan node - lm96063 */
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			/* ext connector nodes here */
++		};
++
++	};
++};
++
++&gpio0 {
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <1 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++
++	cam_pwr_en {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIPWR_En";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <0 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	can0_load {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0Loff";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	vi1_gpioext_rst {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP1_RST";
++	};
++};
++
++&gpio3 {
++	vi0_gpioext_rst {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP0_RST";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	pwm0_pins: pwm0 {
++		groups = "pwm0_a";
++		function = "pwm0";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&pwm0 {
++	pinctrl-0 = <&pwm0_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
++
++&vin4 {
++	status = "okay";
++};
++
++&vin5 {
++	status = "okay";
++};
++
++&vin6 {
++	status = "okay";
++};
++
++&vin7 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl-8ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl-8ch.dts
+new file mode 100644
+index 0000000..df8aede
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl-8ch.dts
+@@ -0,0 +1,713 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK GMSL 8ch Videobox board on r8a77980
++ *
++ * Copyright (C) 2018-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch GMSL Videobox board based on r8a7798";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	vdd_cam0_a: regulator-vdd-cam0-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_a: regulator-vdd-cam1-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-A PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2_a: regulator-vdd-cam2-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-A PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 8 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3_a: regulator-vdd-cam3-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-A PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 9 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam0_b: regulator-vdd-cam0-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 15 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_b: regulator-vdd-cam1-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 14 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam2_b: regulator-vdd-cam2-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR2";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 12 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam3_b: regulator-vdd-cam3-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR3";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&gpio_exp_76 13 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&csi41 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi41_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out1>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++	multi-master;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			gpio_exp_76: gpio@76 {
++				compatible = "nxp,pca9539";
++				reg = <0x76>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				cmr_pwen {
++					gpio-hog;
++					gpios = <3 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "CmrPEN";
++				};
++			};
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@2c {
++				compatible = "maxim,max9286";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x2c>;
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				shutdown-gpios = <&gpio_exp_76 1 GPIO_ACTIVE_LOW>;
++
++				poc0-supply = <&vdd_cam0_a>;
++				poc1-supply = <&vdd_cam1_a>;
++				poc2-supply = <&vdd_cam2_a>;
++				poc3-supply = <&vdd_cam3_a>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			deser@2c {
++				compatible = "maxim,max9286";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x2c>;
++				regs = <0x1c 0x1d 0x1e 0x1f>;
++				shutdown-gpios = <&gpio_exp_76 0 GPIO_ACTIVE_LOW>;
++
++				poc0-supply = <&vdd_cam0_b>;
++				poc1-supply = <&vdd_cam1_b>;
++				poc2-supply = <&vdd_cam2_b>;
++				poc3-supply = <&vdd_cam3_b>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in4: endpoint {
++							remote-endpoint = <&camera_out4>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in5: endpoint {
++							remote-endpoint = <&camera_out5>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in6: endpoint {
++							remote-endpoint = <&camera_out6>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in7: endpoint {
++							remote-endpoint = <&camera_out7>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out1: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi41_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@64 {
++						compatible = LVDS_CAMERA;
++						reg = <0x64 0x1c>;
++
++						port {
++							camera_out4: endpoint {
++								remote-endpoint = <&deser_in4>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@65 {
++						compatible = LVDS_CAMERA;
++						reg = <0x65 0x1d>;
++
++						port {
++							camera_out5: endpoint {
++								remote-endpoint = <&deser_in5>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@66 {
++						compatible = LVDS_CAMERA;
++						reg = <0x66 0x1e>;
++
++						port {
++							camera_out6: endpoint {
++								remote-endpoint = <&deser_in6>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@67 {
++						compatible = LVDS_CAMERA;
++						reg = <0x67 0x1f>;
++
++						port {
++							camera_out7: endpoint {
++								remote-endpoint = <&deser_in7>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@6 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <6>;
++
++			/* ext I2C bus nodes */
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			rtc: mcp79411@6f {
++				compatible = "microchip,mcp7941x";
++				reg = <0x6f>;
++			};
++		};
++	};
++};
++
++&gpio0 {
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <8 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++
++	can0_load {
++		gpio-hog;
++		gpios = <12 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0Loff";
++	};
++
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <21 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	rst_vin01 {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CCTRL_RSTn_VIN01";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	pwm0_pins: pwm0 {
++		groups = "pwm0_a";
++		function = "pwm0";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&pwm0 {
++	pinctrl-0 = <&pwm0_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
++
++&vin4 {
++	status = "okay";
++};
++
++&vin5 {
++	status = "okay";
++};
++
++&vin6 {
++	status = "okay";
++};
++
++&vin7 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-2x2.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-2x2.dts
+new file mode 100644
+index 0000000..301fdf2
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-2x2.dts
+@@ -0,0 +1,583 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK GMSL2 Dual Videobox board on r8a77980
++ *
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 2x2ch GMSL2 Videobox board based on r8a77980";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	cs2300_ref_clk: cs2300_ref_clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	vdd_cam0_a: regulator-vdd-cam0-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-A PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		startup-delay-us = <50>;
++		gpio = <&gpio_exp_76 10 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_a: regulator-vdd-cam1-a {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-A PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		startup-delay-us = <50>;
++		gpio = <&gpio_exp_76 11 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam0_b: regulator-vdd-cam0-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		startup-delay-us = <50>;
++		gpio = <&gpio_exp_76 14 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	vdd_cam1_b: regulator-vdd-cam1-b {
++		compatible = "regulator-fixed";
++		regulator-name = "Video-B PWR1";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		startup-delay-us = <50>;
++		gpio = <&gpio_exp_76 15 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&csi41 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi41_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out1>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			gpio_exp_76: gpio@76 {
++				compatible = "nxp,pca9539";
++				reg = <0x76>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				cmr_pwr_en {
++					gpio-hog;
++					gpios = <3 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "CmrPEn";
++				};
++			};
++
++			cs2300: clk_multiplier@4e {
++				#clock-cells = <0>;
++				compatible = "cirrus,cs2300-cp";
++				reg = <0x4e>;
++				clocks = <&cs2300_ref_clk>;
++				clock-names = "clk_in";
++
++				assigned-clocks = <&cs2300>;
++				assigned-clock-rates = <25000000>;
++			};
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@48 {
++				compatible = "maxim,max9296";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x48>;
++				regs = <0x0c 0x0d>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				shutdown-gpios = <&gpio_exp_76 1 GPIO_ACTIVE_LOW>;
++
++				maxim,links-mipi-map = <1 1>;
++
++				poc0-supply = <&vdd_cam0_a>;
++				poc1-supply = <&vdd_cam1_a>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			deser@48 {
++				compatible = "maxim,max9296";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x48>;
++				regs = <0x1c 0x1d>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				shutdown-gpios = <&gpio_exp_76 0 GPIO_ACTIVE_LOW>;
++
++				maxim,links-mipi-map = <1 1>;
++
++				poc0-supply = <&vdd_cam0_b>;
++				poc1-supply = <&vdd_cam1_b>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in4: endpoint {
++							remote-endpoint = <&camera_out4>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in5: endpoint {
++							remote-endpoint = <&camera_out5>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out1: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi41_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@64 {
++						compatible = LVDS_CAMERA;
++						reg = <0x64 0x1c>;
++
++						port {
++							camera_out4: endpoint {
++								remote-endpoint = <&deser_in4>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@65 {
++						compatible = LVDS_CAMERA;
++						reg = <0x65 0x1d>;
++
++						port {
++							camera_out5: endpoint {
++								remote-endpoint = <&deser_in5>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			/* ext connector nodes here */
++		};
++	};
++};
++
++&gpio0 {
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <1 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++
++	cam_pwr_en {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIPWR_En";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <0 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	cctrl_rstn {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CCTRL_RSTn";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	vi1_gpioext_rst {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP1_RST";
++	};
++};
++
++&gpio3 {
++	vi0_gpioext_rst {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP0_RST";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin4 {
++	status = "okay";
++};
++
++&vin5 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-4.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-4.dts
+new file mode 100644
+index 0000000..c17073d
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-4.dts
+@@ -0,0 +1,538 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK GMSL2 Quad Videobox board on r8a77980
++ *
++ * Copyright (C) 2019-2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 4ch GMSL2 Videobox board based on r8a77980";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	cs2300_ref_clk: cs2300_ref_clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	iio_hwmon: hwmon@1 {
++		compatible = "iio-hwmon";
++		io-channels = <&max2008x 0>, <&max2008x 2>, /* current */
++			      <&max2008x 4>, <&max2008x 6>, /* voltage */
++			      <&max2008x 8>, <&max2008x 9>; /* misc voltages */
++		io-channel-names = "camera-0-Iout", "camera-1-Iout",
++				   "camera-0-Vout", "camera-1-Vout",
++				   "cameras-Vregulator", "cameras-3v3";
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			gpio_exp_76: gpio@76 {
++				compatible = "nxp,pca9539";
++				reg = <0x76>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				cmr_pwr_en {
++					gpio-hog;
++					gpios = <3 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "CmrPEn";
++				};
++			};
++
++			cs2300: clk_multiplier@4e {
++				#clock-cells = <0>;
++				compatible = "cirrus,cs2300-cp";
++				reg = <0x4e>;
++				clocks = <&cs2300_ref_clk>;
++				clock-names = "clk_in";
++
++				assigned-clocks = <&cs2300>;
++				assigned-clock-rates = <25000000>;
++			};
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++
++			max2008x: vcam_switch@28 {
++				compatible = "maxim,max2008x";
++				reg = <0x28>;
++				#io-channel-cells = <1>;
++				enable-gpios = <&gpio_exp_76 5 GPIO_ACTIVE_HIGH>;
++
++				regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					vdd_cam0: SW0 {
++						reg = <0>;
++						regulator-name = "Camera-0";
++					};
++					vdd_cam1: SW1 {
++						reg = <1>;
++						regulator-name = "Camera-1";
++					};
++					vdd_cam2: SW2 {
++						reg = <2>;
++						regulator-name = "Camera-2";
++					};
++					vdd_cam3: SW3 {
++						reg = <3>;
++						regulator-name = "Camera-3";
++					};
++				};
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@29 {
++				compatible = "maxim,max96712";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x29>;
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				shutdown-gpios = <&gpio_exp_76 1 GPIO_ACTIVE_LOW>;
++
++				maxim,links-mipi-map = <2 2 2 2>;
++
++				poc0-supply = <&vdd_cam3>;
++				poc1-supply = <&vdd_cam1>;
++				poc2-supply = <&vdd_cam0>;
++				poc3-supply = <&vdd_cam2>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			rtc: mcp79411@6f {
++				compatible = "microchip,mcp7941x";
++				reg = <0x6f>;
++			};
++		};
++	};
++};
++
++&gpio0 {
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <1 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++
++	cam_pwr_en {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIPWR_En";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <0 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	cctrl_rstn {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CCTRL_RSTn";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	vi1_gpioext_rst {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP1_RST";
++	};
++};
++
++&gpio3 {
++	vi0_gpioext_rst {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP0_RST";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-8.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-8.dts
+new file mode 100644
+index 0000000..56fe40e
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk-vb-gmsl2-8.dts
+@@ -0,0 +1,741 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the V3HSK GMSL2 2xQuad Videobox board on r8a77980
++ *
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include <dt-bindings/gpio/gpio.h>
++#include "camera.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch GMSL2 Videobox board based on r8a77980";
++
++	aliases {
++		serial1 = &scif3;
++		ethernet1 = &avb;
++	};
++
++	cs2300_ref_clk: cs2300_ref_clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led0 {
++			label = "board:status";
++			gpios = <&gpio2 12 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++		};
++	};
++
++	mpcie_1v8: regulator2 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	mpcie_3v3: regulator3 {
++		compatible = "regulator-fixed";
++		regulator-name = "mPCIe 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	common_3v3: regulator4 {
++		compatible = "regulator-fixed";
++		regulator-name = "main 3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	iio_hwmon: hwmon@1 {
++		compatible = "iio-hwmon";
++		io-channels = <&max2008x 0>, <&max2008x 2>, /* current */
++			      <&max2008x 4>, <&max2008x 6>, /* voltage */
++			      <&max2008x 8>, <&max2008x 9>; /* misc voltages */
++		io-channel-names = "camera-0-Iout", "camera-1-Iout",
++				   "camera-0-Vout", "camera-1-Vout",
++				   "cameras-Vregulator", "cameras-3v3";
++	};
++
++	iio_hwmon2: hwmon@2 {
++		compatible = "iio-hwmon";
++		io-channels = <&max2008x_2 0>, <&max2008x_2 2>, /* current */
++			      <&max2008x_2 4>, <&max2008x_2 6>, /* voltage */
++			      <&max2008x_2 8>, <&max2008x_2 9>; /* misc voltages */
++		io-channel-names = "camera-0-Iout", "camera-1-Iout",
++				   "camera-0-Vout", "camera-1-Vout",
++				   "cameras-Vregulator", "cameras-3v3";
++	};
++};
++
++&avb {
++	pinctrl-0 = <&avb_pins>;
++	pinctrl-names = "default";
++	renesas,no-ether-link;
++	phy-handle = <&avb_phy0>;
++	status = "okay";
++	phy-int-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
++	avb_phy0: eavb-phy@0 {
++		rxc-skew-ps = <1500>;
++		rxdv-skew-ps = <420>; /* default */
++		rxd0-skew-ps = <420>; /* default */
++		rxd1-skew-ps = <420>; /* default */
++		rxd2-skew-ps = <420>; /* default */
++		rxd3-skew-ps = <420>; /* default */
++		txc-skew-ps = <900>; /* default */
++		txen-skew-ps = <420>; /* default */
++		txd0-skew-ps = <420>; /* default */
++		txd1-skew-ps = <420>; /* default */
++		txd2-skew-ps = <420>; /* default */
++		txd3-skew-ps = <420>; /* default */
++		reg = <3>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++		max-speed = <1000>;
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins &canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
++&csi40 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi40_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out0>;
++			};
++		};
++	};
++};
++
++&csi41 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			csi41_in: endpoint {
++				clock-lanes = <0>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&deser_out1>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	clock-frequency = <400000>;
++
++	i2cswitch1: i2c-switch@74 {
++		compatible = "nxp,pca9548";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x74>;
++		reset-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
++
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			gpio_exp_76: gpio@76 {
++				compatible = "nxp,pca9539";
++				reg = <0x76>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				cmr_pwr_en {
++					gpio-hog;
++					gpios = <3 GPIO_ACTIVE_HIGH>;
++					output-high;
++					line-name = "CmrPEn";
++				};
++			};
++
++			cs2300: clk_multiplier@4e {
++				#clock-cells = <0>;
++				compatible = "cirrus,cs2300-cp";
++				reg = <0x4e>;
++				clocks = <&cs2300_ref_clk>;
++				clock-names = "clk_in";
++
++				assigned-clocks = <&cs2300>;
++				assigned-clock-rates = <25000000>;
++			};
++
++			dac_vcam: dac_vcam@60 {
++				compatible = "microchip,mcp4725";
++				reg = <0x60>;
++				vdd-supply = <&common_3v3>;
++			};
++
++			max2008x: vcam_switch@28 {
++				compatible = "maxim,max2008x";
++				reg = <0x28>;
++				#io-channel-cells = <1>;
++				enable-gpios = <&gpio_exp_76 5 GPIO_ACTIVE_HIGH>;
++
++				regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					vdd_cam0: SW0 {
++						reg = <0>;
++						regulator-name = "Camera-0";
++					};
++					vdd_cam1: SW1 {
++						reg = <1>;
++						regulator-name = "Camera-1";
++					};
++					vdd_cam2: SW2 {
++						reg = <2>;
++						regulator-name = "Camera-2";
++					};
++					vdd_cam3: SW3 {
++						reg = <3>;
++						regulator-name = "Camera-3";
++					};
++				};
++			};
++
++			max2008x_2: vcam_switch@29 {
++				compatible = "maxim,max2008x";
++				reg = <0x29>;
++				#io-channel-cells = <1>;
++				/* enable-gpios = <&gpio_exp_76 5 GPIO_ACTIVE_HIGH>; */
++
++				regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					vdd_cam4: SW0 {
++						reg = <0>;
++						regulator-name = "Camera-4";
++					};
++					vdd_cam5: SW1 {
++						reg = <1>;
++						regulator-name = "Camera-5";
++					};
++					vdd_cam6: SW2 {
++						reg = <2>;
++						regulator-name = "Camera-6";
++					};
++					vdd_cam7: SW3 {
++						reg = <3>;
++						regulator-name = "Camera-7";
++					};
++				};
++			};
++		};
++
++		i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++
++			deser@29 {
++				compatible = "maxim,max96712";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x29>;
++				regs = <0x0c 0x0d 0x0e 0x0f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				shutdown-gpios = <&gpio_exp_76 1 GPIO_ACTIVE_LOW>;
++
++				maxim,links-mipi-map = <2 2 2 2>;
++
++				poc0-supply = <&vdd_cam1>;
++				poc1-supply = <&vdd_cam4>;
++				poc2-supply = <&vdd_cam6>;
++				poc3-supply = <&vdd_cam3>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in0: endpoint {
++							remote-endpoint = <&camera_out0>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in1: endpoint {
++							remote-endpoint = <&camera_out1>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in2: endpoint {
++							remote-endpoint = <&camera_out2>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in3: endpoint {
++							remote-endpoint = <&camera_out3>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out0: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi40_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@60 {
++						compatible = LVDS_CAMERA;
++						reg = <0x60 0x0c>;
++
++						port {
++							camera_out0: endpoint {
++								remote-endpoint = <&deser_in0>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@61 {
++						compatible = LVDS_CAMERA;
++						reg = <0x61 0x0d>;
++
++						port {
++							camera_out1: endpoint {
++								remote-endpoint = <&deser_in1>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@62 {
++						compatible = LVDS_CAMERA;
++						reg = <0x62 0x0e>;
++
++						port {
++							camera_out2: endpoint {
++								remote-endpoint = <&deser_in2>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@63 {
++						compatible = LVDS_CAMERA;
++						reg = <0x63 0x0f>;
++
++						port {
++							camera_out3: endpoint {
++								remote-endpoint = <&deser_in3>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++
++			deser@29 {
++				compatible = "maxim,max96712";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x29>;
++				regs = <0x1c 0x1d 0x1e 0x1f>;
++				clocks = <&cs2300>;
++				clock-names = "ref_clk";
++				shutdown-gpios = <&gpio_exp_76 2 GPIO_ACTIVE_LOW>;
++
++				maxim,links-mipi-map = <1 1 1 1>;
++
++				poc0-supply = <&vdd_cam0>;
++				poc1-supply = <&vdd_cam7>;
++				poc2-supply = <&vdd_cam5>;
++				poc3-supply = <&vdd_cam2>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						deser_in4: endpoint {
++							remote-endpoint = <&camera_out4>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						deser_in5: endpoint {
++							remote-endpoint = <&camera_out5>;
++						};
++					};
++
++					port@2 {
++						reg = <2>;
++						deser_in6: endpoint {
++							remote-endpoint = <&camera_out6>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++						deser_in7: endpoint {
++							remote-endpoint = <&camera_out7>;
++						};
++					};
++
++					port@4 {
++						reg = <4>;
++						deser_out1: endpoint {
++							clock-lanes = <0>;
++							data-lanes = <1 2 3 4>;
++							remote-endpoint = <&csi41_in>;
++						};
++					};
++				};
++
++				i2c@0 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <0>;
++
++					camera@64 {
++						compatible = LVDS_CAMERA;
++						reg = <0x64 0x1c>;
++
++						port {
++							camera_out4: endpoint {
++								remote-endpoint = <&deser_in4>;
++							};
++						};
++					};
++				};
++
++				i2c@1 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <1>;
++
++					camera@65 {
++						compatible = LVDS_CAMERA;
++						reg = <0x65 0x1d>;
++
++						port {
++							camera_out5: endpoint {
++								remote-endpoint = <&deser_in5>;
++							};
++						};
++					};
++				};
++
++				i2c@2 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <2>;
++
++					camera@66 {
++						compatible = LVDS_CAMERA;
++						reg = <0x66 0x1e>;
++
++						port {
++							camera_out6: endpoint {
++								remote-endpoint = <&deser_in6>;
++							};
++						};
++					};
++				};
++
++				i2c@3 {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					reg = <3>;
++
++					camera@67 {
++						compatible = LVDS_CAMERA;
++						reg = <0x67 0x1f>;
++
++						port {
++							camera_out7: endpoint {
++								remote-endpoint = <&deser_in7>;
++							};
++						};
++					};
++				};
++			};
++		};
++
++		i2c@5 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <5>;
++
++			/* fan node - lm96063 */
++			fan_ctrl: lm96063@4c {
++				compatible = "lm96163";
++				reg = <0x4c>;
++			};
++		};
++
++		i2c@7 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <7>;
++
++			rtc: mcp79411@6f {
++				compatible = "microchip,mcp7941x";
++				reg = <0x6f>;
++			};
++		};
++	};
++};
++
++&gpio0 {
++	fpdl_shdn {
++		gpio-hog;
++		gpios = <1 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "FPDL_SHDN";
++	};
++
++	cam_pwr_en {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIPWR_En";
++	};
++
++	wake_pin_8 {
++		gpio-hog;
++		gpios = <0 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 8";
++	};
++};
++
++&gpio1 {
++	md_buf_en {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CPLD_If_En";
++	};
++};
++
++&gpio2 {
++	m2_rst {
++		gpio-hog;
++		gpios = <11 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "M.2 RST#";
++	};
++
++	cctrl_rstn {
++		gpio-hog;
++		gpios = <16 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CCTRL_RSTn";
++	};
++
++	can0_stby {
++		gpio-hog;
++		gpios = <27 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN0STBY";
++	};
++
++	can1_load {
++		gpio-hog;
++		gpios = <29 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1Loff";
++	};
++
++	can1_stby {
++		gpio-hog;
++		gpios = <22 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "CAN1STBY";
++	};
++
++	wake_pin_7 {
++		gpio-hog;
++		gpios = <19 GPIO_ACTIVE_HIGH>;
++		input;
++		line-name = "WAKE INPUT PIN 7";
++	};
++
++	vi1_gpioext_rst {
++		gpio-hog;
++		gpios = <13 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP1_RST";
++	};
++};
++
++&gpio3 {
++	vi0_gpioext_rst {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIP0_RST";
++	};
++};
++
++&pcie_bus_clk {
++	clock-frequency = <100000000>;
++	status = "okay";
++};
++
++&pciec {
++	pcie3v3-supply = <&mpcie_3v3>;
++	pcie1v8-supply = <&mpcie_1v8>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pfc {
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data_a";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	avb_pins: avb {
++		groups = "avb_mdio", "avb_rgmii";
++		function = "avb";
++	};
++
++	i2c1_pins: i2c1 {
++		groups = "i2c1";
++		function = "i2c1";
++	};
++
++	scif3_pins: scif3 {
++		groups = "scif3_data";
++		function = "scif3";
++	};
++};
++
++&scif3 {
++	pinctrl-0 = <&scif3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&tpu {
++	status = "disabled";
++};
++
++&vin0 {
++	status = "okay";
++};
++
++&vin1 {
++	status = "okay";
++};
++
++&vin2 {
++	status = "okay";
++};
++
++&vin3 {
++	status = "okay";
++};
++
++&vin4 {
++	status = "okay";
++};
++
++&vin5 {
++	status = "okay";
++};
++
++&vin6 {
++	status = "okay";
++};
++
++&vin7 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/renesas/vb-fdplink-output.dtso b/arch/arm64/boot/dts/renesas/vb-fdplink-output.dtso
+new file mode 100644
+index 0000000..e17b801c
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/vb-fdplink-output.dtso
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for VideoBox FDPLink output.
++ *
++ * Copyright (C) 2019-2020 Renesas Electronics Corp.
++ * Copyright (C) 2019-2020 Cogent Embedded, Inc.
++ */
++
++/dts-v1/;
++/plugin/;
++
++/ {
++	fragment@101 {
++		target-path = "/";
++
++		__overlay__ {
++
++			lvds {
++				compatible = "panel-lvds";
++
++				width-mm = <210>;
++				height-mm = <158>;
++
++				data-mapping = "jeida-24";
++
++				panel-timing {
++					/* 1280x800 @60Hz */
++					clock-frequency = <65000000>;
++					hactive = <1280>;
++					vactive = <800>;
++					hsync-len = <40>;
++					hfront-porch = <80>;
++					hback-porch = <40>;
++					vfront-porch = <14>;
++					vback-porch = <14>;
++					vsync-len = <4>;
++				};
++
++				port {
++					lvds_in: endpoint {
++						remote-endpoint = <&lvds0_out>;
++					};
++				};
++			};
++		};
++	};
++
++	fragment@102 {
++		target = <&lvds0>;
++		__overlay__ {
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@1 {
++					reg = <1>;
++					lvds0_out: endpoint {
++						/* FDPLink output */
++						remote-endpoint = <&lvds_in>;
++					};
++				};
++			};
++		};
++	};
++};
+-- 
+2.7.4
+

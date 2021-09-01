@@ -1,0 +1,35 @@
+From fc3f2961f4d645ff3e587da6b7b9075ba3a26616 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Thu, 6 May 2021 17:26:19 +0300
+Subject: [PATCH 53/61] arm64: dts: renesas: ulcb-kf: Enable LSM9DS0 IMU and
+ GYRO support
+
+This switches to the latest LSM9DS0 IMU and GYRO drivers.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index c92d256..f995afa 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -480,12 +480,12 @@
+ 			};
+ 
+ 			lsm9ds0_acc_mag@1d {
+-				compatible = "st,lsm9ds0";
++				compatible = "st,lsm9ds0-imu";
+ 				reg = <0x1d>;
+ 			};
+ 
+ 			lsm9ds0_gyr@6b {
+-				compatible = "st,lsm9ds0";
++				compatible = "st,lsm9ds0-gyro";
+ 				reg = <0x6b>;
+ 			};
+ 
+-- 
+2.7.4
+

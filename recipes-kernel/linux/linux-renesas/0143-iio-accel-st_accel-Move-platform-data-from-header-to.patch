@@ -1,0 +1,59 @@
+From 391e40da2e2269928183c0d1244a2367f3f7d183 Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Wed, 14 Apr 2021 22:54:48 +0300
+Subject: [PATCH 46/61] iio: accel: st_accel: Move platform data from header to
+ C file
+
+Platform data is solely used by one file. Don't share it with others.
+
+While at it, drop unneeded anymore __maybe_unused and fix kernel doc
+to avoid warning:
+
+  st_accel_core.c:1079: error: Cannot parse struct or union!
+
+by converting to a simple comment. It is described at the declaration.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/iio/accel/st_accel.h      | 8 --------
+ drivers/iio/accel/st_accel_core.c | 5 +++++
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/iio/accel/st_accel.h b/drivers/iio/accel/st_accel.h
+index 5d35628..181ebe7 100644
+--- a/drivers/iio/accel/st_accel.h
++++ b/drivers/iio/accel/st_accel.h
+@@ -62,14 +62,6 @@ enum st_accel_type {
+ #define LIS2DE12_ACCEL_DEV_NAME		"lis2de12"
+ #define LIS2HH12_ACCEL_DEV_NAME		"lis2hh12"
+ 
+-/**
+-* struct st_sensors_platform_data - default accel platform data
+-* @drdy_int_pin: default accel DRDY is available on INT1 pin.
+-*/
+-static __maybe_unused const struct st_sensors_platform_data default_accel_pdata = {
+-	.drdy_int_pin = 1,
+-};
+-
+ const struct st_sensor_settings *st_accel_get_settings(const char *name);
+ int st_accel_common_probe(struct iio_dev *indio_dev);
+ void st_accel_common_remove(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
+index 43c5016..a1bd7e3 100644
+--- a/drivers/iio/accel/st_accel_core.c
++++ b/drivers/iio/accel/st_accel_core.c
+@@ -983,6 +983,11 @@ static const struct st_sensor_settings st_accel_sensors_settings[] = {
+ 
+ };
+ 
++/* Default accel DRDY is available on INT1 pin */
++static const struct st_sensors_platform_data default_accel_pdata = {
++	.drdy_int_pin = 1,
++};
++
+ static int st_accel_read_raw(struct iio_dev *indio_dev,
+ 			struct iio_chan_spec const *ch, int *val,
+ 							int *val2, long mask)
+-- 
+2.7.4
+

@@ -1,0 +1,43 @@
+From cecca509d2f37b308da208446670180931510c6e Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 16 Oct 2020 18:42:47 +0300
+Subject: [PATCH 3/3] arm64: boot: dts: renesas: ulcb-kf: Set radio and BT
+ sound masters
+
+This sets rcar_sound ports as bitclock and frame masters
+for the radio and BT sound cards.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 0132644..b3155a3 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -1061,8 +1061,8 @@
+ 				remote-endpoint = <&si468x_endpoint>;
+ 
+ 				dai-format = "i2s";
+-				bitclock-master = <&rsnd_for_si468x>;
+-				frame-master = <&rsnd_for_si468x>;
++				bitclock-master = <&si468x_endpoint>;
++				frame-master = <&si468x_endpoint>;
+ 
+ 				capture = <&ssi6>;
+ 			};
+@@ -1073,8 +1073,8 @@
+ 				remote-endpoint = <&wl18xx_endpoint>;
+ 
+ 				simple-audio-card,format = "i2s";
+-				bitclock-master = <&rsnd_for_wl18xx>;
+-				frame-master = <&rsnd_for_wl18xx>;
++				bitclock-master = <&wl18xx_endpoint>;
++				frame-master = <&wl18xx_endpoint>;
+ 
+ 				playback = <&ssi7>;
+ 				capture = <&ssi8>;
+-- 
+2.7.4
+

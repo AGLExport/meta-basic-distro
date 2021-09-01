@@ -1,0 +1,60 @@
+From 0bc0ea9e91d18f3be71786e92f700974a3f9da6f Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 30 Apr 2021 16:04:18 +0300
+Subject: [PATCH 15/61] Revert "arm64: dts: Makefile: Comment out compiling of
+ dtbo"
+
+Now that scripts/Makefile.lib has been changed, and the
+unneeded -O option has been removed from the DTC command
+line parameters re-enable DTBO compilation here.
+
+This reverts commit 320146efde98b4a42cbdf1ff83026e8871443f79.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/Makefile | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+index 4e0e3c1..1f05277 100644
+--- a/arch/arm64/boot/dts/renesas/Makefile
++++ b/arch/arm64/boot/dts/renesas/Makefile
+@@ -89,19 +89,19 @@ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-condor.dtb
+ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-v3hsk.dtb
+ 
+ # overlays
+-# DTC_FLAGS += -@
+-# ulcb-kf-dtbo := ulcb-kf-cn11.dtbo ulcb-kf-most.dtbo ulcb-kf-sd3.dtbo \
+-#		ulcb-kf-cn10-pca.dtbo ulcb-kf-cn11-pca.dtbo \
+-#		ulcb-kf-cn10-gmsl2.dtbo ulcb-kf-cn11-gmsl2.dtbo \
+-#		ulcb-kf-panel-koe-tx31d200vm0baa-1280x480.dtbo \
+-#		ulcb-kf-panel-mitsubishi-aa104xd12-1024x768.dtbo \
+-#		ulcb-kf-panel-mitsubishi-aa121td01-1280x800.dtbo \
+-#		ulcb-kf-imx219.dtbo
+-
+-# vb-dtbo := vb-fdplink-output.dtbo
+-
+-# dtb-$(CONFIG_ARCH_R8A77951) += $(ulcb-kf-dtbo)
+-# dtb-$(CONFIG_ARCH_R8A77961) += $(ulcb-kf-dtbo)
+-# dtb-$(CONFIG_ARCH_R8A77965) += $(ulcb-kf-dtbo)
+-# dtb-$(CONFIG_ARCH_R8A77970) += $(vb-dtbo)
+-# dtb-$(CONFIG_ARCH_R8A77980) += $(vb-dtbo)
++DTC_FLAGS += -@
++ulcb-kf-dtbo := ulcb-kf-cn11.dtbo ulcb-kf-most.dtbo ulcb-kf-sd3.dtbo \
++		ulcb-kf-cn10-pca.dtbo ulcb-kf-cn11-pca.dtbo \
++		ulcb-kf-cn10-gmsl2.dtbo ulcb-kf-cn11-gmsl2.dtbo \
++		ulcb-kf-panel-koe-tx31d200vm0baa-1280x480.dtbo \
++		ulcb-kf-panel-mitsubishi-aa104xd12-1024x768.dtbo \
++		ulcb-kf-panel-mitsubishi-aa121td01-1280x800.dtbo \
++		ulcb-kf-imx219.dtbo
++
++vb-dtbo := vb-fdplink-output.dtbo
++
++dtb-$(CONFIG_ARCH_R8A77951) += $(ulcb-kf-dtbo)
++dtb-$(CONFIG_ARCH_R8A77961) += $(ulcb-kf-dtbo)
++dtb-$(CONFIG_ARCH_R8A77965) += $(ulcb-kf-dtbo)
++dtb-$(CONFIG_ARCH_R8A77970) += $(vb-dtbo)
++dtb-$(CONFIG_ARCH_R8A77980) += $(vb-dtbo)
+-- 
+2.7.4
+

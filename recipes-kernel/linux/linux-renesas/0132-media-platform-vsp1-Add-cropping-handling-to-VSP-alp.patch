@@ -1,0 +1,42 @@
+From 3a1697dbca742c898e71f3fdd256d418a46d9c5a Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Thu, 8 Oct 2020 15:57:54 +0300
+Subject: [PATCH 12/12] media: platform: vsp1: Add cropping handling to VSP
+ alpha-planes
+
+This is based on the original "Add cropping handling to VSP alpha-planes"
+patch by Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/media/platform/vsp1/vsp1_rpf.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/vsp1/vsp1_rpf.c b/drivers/media/platform/vsp1/vsp1_rpf.c
+index 04edf1b..f1a2dd9 100644
+--- a/drivers/media/platform/vsp1/vsp1_rpf.c
++++ b/drivers/media/platform/vsp1/vsp1_rpf.c
+@@ -163,12 +163,17 @@ static void rpf_configure_stream(struct vsp1_entity *entity,
+ 
+ 	// ...setup alpha-plane as required
+ 	if (rpf->mem.alpha) {
+-		vsp1_rpf_write(rpf, dlb, VI6_RPF_SRCM_ADDR_AI, rpf->mem.alpha);
++		struct v4l2_rect *crop = vsp1_rwpf_get_crop(rpf, rpf->entity.config);
++
++		vsp1_rpf_write(rpf, dlb, VI6_RPF_SRCM_ADDR_AI,
++			       rpf->mem.alpha + crop->top * rpf->alpha_pitch + crop->left);
++
+ 		vsp1_rpf_write(rpf, dlb, VI6_RPF_ALPH_SEL, VI6_RPF_ALPH_SEL_ASEL_8B_PLANE);
+ 		vsp1_rpf_write(rpf, dlb, VI6_RPF_SRCM_ASTRIDE, rpf->alpha_pitch);
+ 		dev_dbg(entity->vsp1->dev,
+-			"rpf#%d: setup alpha-plane: buffer=%pad, stride=%u\n",
+-			rpf->entity.index, &rpf->mem.alpha, rpf->alpha_pitch);
++			"rpf#%d: setup alpha-plane: buffer=%pad, crop=%d,%d, stride=%u\n",
++			rpf->entity.index, &rpf->mem.alpha, crop->left, crop->top,
++			rpf->alpha_pitch);
+ 		goto out;
+ 	}
+ 
+-- 
+2.7.4
+

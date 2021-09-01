@@ -1,0 +1,631 @@
+From e2bfa7e6afe776b5726a4bcb0eae8db22d2dfc85 Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Thu, 8 Oct 2020 12:56:04 +0300
+Subject: [PATCH 130/137] gpu: drm: rcar-du: Extend VSP1-DRM interface
+
+This is based on the original "Extend VSP1-DRM interface" patch
+by Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>
+which adds alpha plane and color key properties to DRM planes.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/gpu/drm/drm_fourcc.c                |   1 +
+ drivers/gpu/drm/rcar-du/rcar_du_drv.h       |   5 +
+ drivers/gpu/drm/rcar-du/rcar_du_kms.c       |  39 +++++
+ drivers/gpu/drm/rcar-du/rcar_du_plane.c     |   1 +
+ drivers/gpu/drm/rcar-du/rcar_du_plane.h     |   5 +
+ drivers/gpu/drm/rcar-du/rcar_du_vsp.c       | 239 +++++++++++++++++++++++-----
+ drivers/gpu/drm/rcar-du/rcar_du_vsp.h       |  17 +-
+ drivers/gpu/drm/rcar-du/rcar_du_writeback.c |   4 +-
+ include/media/vsp1.h                        |   6 +
+ 9 files changed, 269 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index 722c7eb..9cf7d16 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -158,6 +158,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
+ {
+ 	static const struct drm_format_info formats[] = {
+ 		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_R8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_RGB332,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_BGR233,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_XRGB4444,	.depth = 0,  .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+index 92a224c..4b8a2f6 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
++++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+@@ -104,6 +104,11 @@ struct rcar_du_device {
+ 		struct drm_property *alpha;
+ 		struct drm_property *colorkey;
+ 		struct drm_property *colorkey_alpha;
++		struct drm_property *alphaplane;
++		struct drm_property *blend;
++		struct drm_property *ckey;
++		struct drm_property *ckey_set0;
++		struct drm_property *ckey_set1;
+ 	} props;
+ 
+ 	unsigned int dpad0_source;
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_kms.c b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
+index 8b60b3d..2f3e714 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_kms.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
+@@ -114,6 +114,14 @@ static const struct rcar_du_format_info rcar_du_format_infos[] = {
+ 		.hsub = 2,
+ 		.pnmr = PnMR_SPIM_TP_OFF | PnMR_DDDF_YC,
+ 		.edf = PnDDCR4_EDF_NONE,
++	}, {
++		.fourcc = DRM_FORMAT_R8,
++		.v4l2 = V4L2_PIX_FMT_GREY,
++		.bpp = 8,
++		.planes = 1,
++               .hsub = 1,
++		.pnmr = PnMR_SPIM_TP_OFF | PnMR_DDDF_8BPP,
++		.edf = PnDDCR4_EDF_NONE,
+ 	},
+ 	/*
+ 	 * The following formats are not supported on Gen2 and thus have no
+@@ -656,6 +664,37 @@ static int rcar_du_properties_init(struct rcar_du_device *rcdu)
+ 			return -ENOMEM;
+ 	}
+ 
++	rcdu->props.alphaplane =
++		drm_property_create(rcdu->ddev, DRM_MODE_PROP_OBJECT, "alphaplane", 1);
++	if (rcdu->props.alphaplane == NULL)
++		return -ENOMEM;
++
++	rcdu->props.alphaplane->values[0] = DRM_MODE_OBJECT_FB;
++
++	rcdu->props.blend =
++		drm_property_create_range(rcdu->ddev, 0, "blend",
++					  0, 0xffffffff);
++	if (rcdu->props.blend == NULL)
++		return -ENOMEM;
++
++	rcdu->props.ckey =
++		drm_property_create_range(rcdu->ddev, 0, "ckey",
++					  0, 0xffffffff);
++	if (rcdu->props.ckey == NULL)
++		return -ENOMEM;
++
++	rcdu->props.ckey_set0 =
++		drm_property_create_range(rcdu->ddev, 0, "ckey_set0",
++					  0, 0xffffffff);
++	if (rcdu->props.ckey_set0 == NULL)
++		return -ENOMEM;
++
++	rcdu->props.ckey_set1 =
++		drm_property_create_range(rcdu->ddev, 0, "ckey_set1",
++					  0, 0xffffffff);
++	if (rcdu->props.ckey_set1 == NULL)
++		return -ENOMEM;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_plane.c b/drivers/gpu/drm/rcar-du/rcar_du_plane.c
+index 15cd8b6..2fbe8b69 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_plane.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_plane.c
+@@ -783,6 +783,7 @@ static const uint32_t formats[] = {
+ 	DRM_FORMAT_NV12,
+ 	DRM_FORMAT_NV21,
+ 	DRM_FORMAT_NV16,
++	DRM_FORMAT_R8,
+ };
+ 
+ int rcar_du_planes_init(struct rcar_du_group *rgrp)
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_plane.h b/drivers/gpu/drm/rcar-du/rcar_du_plane.h
+index 4701ea4..0e83fbd 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_plane.h
++++ b/drivers/gpu/drm/rcar-du/rcar_du_plane.h
+@@ -65,6 +65,11 @@ struct rcar_du_plane_state {
+ 	unsigned int alpha;
+ 	unsigned int colorkey;
+ 	unsigned int colorkey_alpha;
++	struct drm_framebuffer *alphaplane;
++	unsigned int blend;
++	unsigned int ckey;
++	unsigned int ckey_set0;
++	unsigned int ckey_set1;
+ };
+ 
+ static inline struct rcar_du_plane_state *
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+index 1c7c995..680d284 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+@@ -100,6 +100,16 @@ void rcar_du_vsp_enable(struct rcar_du_crtc *crtc)
+ 
+ void rcar_du_vsp_disable(struct rcar_du_crtc *crtc)
+ {
++	struct rcar_du_vsp *vsp = crtc->vsp;
++	struct rcar_du_vsp_plane *primary = &vsp->planes[0];
++	struct rcar_du_vsp_plane_state *rstate = to_rcar_vsp_plane_state(primary->plane.state);
++
++	/* ...drop alpha-plane associated with primary plane (why only primary? - tbd) */
++	if (rstate->alphaplane) {
++		drm_framebuffer_put(rstate->alphaplane);
++		rstate->alphaplane = NULL;
++	}
++
+ 	vsp1_du_setup_lif(crtc->vsp->vsp, crtc->vsp_pipe, NULL);
+ }
+ 
+@@ -150,6 +160,7 @@ static const u32 rcar_du_vsp_formats[] = {
+ 	DRM_FORMAT_YVU422,
+ 	DRM_FORMAT_YUV444,
+ 	DRM_FORMAT_YVU444,
++	DRM_FORMAT_R8,
+ };
+ 
+ static void rcar_du_vsp_plane_setup(struct rcar_du_vsp_plane *plane)
+@@ -189,12 +200,34 @@ static void rcar_du_vsp_plane_setup(struct rcar_du_vsp_plane *plane)
+ 	format = rcar_du_format_info(state->format->fourcc);
+ 	cfg.pixelformat = format->v4l2;
+ 
++	/* ...add alpha-plane as needed */
++	if (state->alphaplane) {
++		i = state->format->planes;
++		cfg.alpha_mem = sg_dma_address(state->sg_tables[i].sgl);
++		cfg.alpha_pitch = state->alphaplane->pitches[0];
++		pr_debug("alpha-%d: set alpha-mem address: %llx, pitch=%d\n",
++			 i, (unsigned long long)cfg.alpha_mem, cfg.alpha_pitch);
++	}
++
++	/* ...add blending formula as  needed */
++	if (state->blend) {
++		cfg.blend = state->blend;
++		pr_debug("set blending formula: %X\n", cfg.blend);
++	}
++
++	/* ...add color key property as needed */
++	if (state->ckey) {
++		cfg.ckey = state->ckey;
++		cfg.ckey_set0 = state->ckey_set0;
++		cfg.ckey_set1 = state->ckey_set1;
++	}
++
+ 	vsp1_du_atomic_update(plane->vsp->vsp, crtc->vsp_pipe,
+ 			      plane->index, &cfg);
+ }
+ 
+ int rcar_du_vsp_map_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+-		       struct sg_table sg_tables[3])
++		       struct sg_table sg_tables[3], struct rcar_du_vsp_plane_state *rstate)
+ {
+ 	struct rcar_du_device *rcdu = vsp->dev;
+ 	unsigned int i;
+@@ -216,6 +249,24 @@ int rcar_du_vsp_map_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+ 		}
+ 	}
+ 
++	/* ...check if we have alpha-plane attached */
++	/* if rstate is NULL then we are mapping writeback fb */
++	if (rstate && rstate->alphaplane) {
++		struct drm_gem_cma_object *gem = drm_fb_cma_get_gem_obj(rstate->alphaplane, 0);
++		struct sg_table *sgt = &rstate->sg_tables[i++];
++
++		ret = dma_get_sgtable(rcdu->dev, sgt, gem->vaddr, gem->paddr, gem->base.size);
++		if (ret)
++			goto fail;
++
++		ret = vsp1_du_map_sg(vsp->vsp, sgt);
++		if (!ret) {
++			sg_free_table(sgt);
++			ret = -ENOMEM;
++			goto fail;
++		}
++	}
++
+ 	return 0;
+ 
+ fail:
+@@ -243,7 +294,7 @@ static int rcar_du_vsp_plane_prepare_fb(struct drm_plane *plane,
+ 	if (!state->visible)
+ 		return 0;
+ 
+-	ret = rcar_du_vsp_map_fb(vsp, state->fb, rstate->sg_tables);
++	ret = rcar_du_vsp_map_fb(vsp, state->fb, rstate->sg_tables, rstate);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -251,7 +302,7 @@ static int rcar_du_vsp_plane_prepare_fb(struct drm_plane *plane,
+ }
+ 
+ void rcar_du_vsp_unmap_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+-			  struct sg_table sg_tables[3])
++			  struct sg_table sg_tables[3], struct rcar_du_vsp_plane_state *rstate)
+ {
+ 	unsigned int i;
+ 
+@@ -261,6 +312,15 @@ void rcar_du_vsp_unmap_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+ 		vsp1_du_unmap_sg(vsp->vsp, sgt);
+ 		sg_free_table(sgt);
+ 	}
++
++	/* if rstate is NULL then we are unmapping writeback fb */
++	if (rstate && rstate->alphaplane) {
++		struct sg_table *sgt = &rstate->sg_tables[i];
++
++		vsp1_du_unmap_sg(vsp->vsp, sgt);
++		sg_free_table(sgt);
++		pr_debug("unmap alpha-plane\n");
++	}
+ }
+ 
+ static void rcar_du_vsp_plane_cleanup_fb(struct drm_plane *plane,
+@@ -272,7 +332,7 @@ static void rcar_du_vsp_plane_cleanup_fb(struct drm_plane *plane,
+ 	if (!state->visible)
+ 		return;
+ 
+-	rcar_du_vsp_unmap_fb(vsp, state->fb, rstate->sg_tables);
++	rcar_du_vsp_unmap_fb(vsp, state->fb, rstate->sg_tables, rstate);
+ }
+ 
+ static int rcar_du_vsp_plane_atomic_check(struct drm_plane *plane,
+@@ -315,6 +375,13 @@ rcar_du_vsp_plane_atomic_duplicate_state(struct drm_plane *plane)
+ 	if (copy == NULL)
+ 		return NULL;
+ 
++	if (copy->alphaplane) {
++		drm_framebuffer_get(copy->alphaplane);
++		pr_debug("duplicate alpha-plane '%p' (refcount=%d)\n",
++			 copy->alphaplane,
++			 drm_framebuffer_read_refcount(copy->alphaplane));
++	}
++
+ 	__drm_atomic_helper_plane_duplicate_state(plane, &copy->state);
+ 	copy->alpha = to_rcar_vsp_plane_state(plane->state)->alpha;
+ 	copy->colorkey = to_rcar_vsp_plane_state(plane->state)->colorkey;
+@@ -326,8 +393,17 @@ rcar_du_vsp_plane_atomic_duplicate_state(struct drm_plane *plane)
+ static void rcar_du_vsp_plane_atomic_destroy_state(struct drm_plane *plane,
+ 						   struct drm_plane_state *state)
+ {
++	struct rcar_du_vsp_plane_state *rstate = to_rcar_vsp_plane_state(state);
++
++	if (rstate->alphaplane) {
++		pr_debug("unref alpha-plane '%p' (refcount=%d)\n",
++			 rstate->alphaplane,
++			 drm_framebuffer_read_refcount(rstate->alphaplane));
++		drm_framebuffer_put(rstate->alphaplane);
++	}
++
+ 	__drm_atomic_helper_plane_destroy_state(state);
+-	kfree(to_rcar_vsp_plane_state(state));
++	kfree(rstate);
+ }
+ 
+ static void rcar_du_vsp_plane_reset(struct drm_plane *plane)
+@@ -335,6 +411,8 @@ static void rcar_du_vsp_plane_reset(struct drm_plane *plane)
+ 	struct rcar_du_vsp_plane_state *state;
+ 
+ 	if (plane->state) {
++		pr_debug("reset plane '%p'\n",
++			 to_rcar_vsp_plane_state(plane->state)->alphaplane);
+ 		rcar_du_vsp_plane_atomic_destroy_state(plane, plane->state);
+ 		plane->state = NULL;
+ 	}
+@@ -364,9 +442,10 @@ int rcar_du_vsp_write_back(struct drm_device *dev, void *data,
+ 	struct rcar_du_crtc *rcrtc;
+ 	struct rcar_du_device *rcdu;
+ 	const struct drm_display_mode *mode;
+-	u32 pixelformat, bpp;
+-	unsigned int pitch;
++	struct drm_framebuffer *fb;
+ 	dma_addr_t mem[3];
++	struct sg_table sg_tables[3];
++	int i = 0;
+ 
+ 	obj = drm_mode_object_find(dev, file_priv, sh->crtc_id,
+ 				   DRM_MODE_OBJECT_CRTC);
+@@ -378,64 +457,90 @@ int rcar_du_vsp_write_back(struct drm_device *dev, void *data,
+ 	rcdu = rcrtc->group->dev;
+ 	mode = &rcrtc->crtc.state->adjusted_mode;
+ 
+-	switch (sh->fmt) {
+-	case DRM_FORMAT_RGB565:
+-		bpp = 16;
+-		pixelformat = V4L2_PIX_FMT_RGB565;
+-		break;
+-	case DRM_FORMAT_ARGB1555:
+-		bpp = 16;
+-		pixelformat = V4L2_PIX_FMT_ARGB555;
+-		break;
+-	case DRM_FORMAT_ARGB8888:
+-		bpp = 32;
+-		pixelformat = V4L2_PIX_FMT_ABGR32;
+-		break;
+-	default:
+-		dev_err(rcdu->dev, "specified format is not supported.\n");
++	fb = drm_framebuffer_lookup(dev, file_priv, sh->buff);
++	if (!fb) {
++		dev_err(dev->dev,
++			"failed to lookup destination framebuffer '%lu'\n",
++			sh->buff);
+ 		return -EINVAL;
+ 	}
+ 
+-	pitch = mode->hdisplay * bpp / 8;
++	/* ...check framebuffer is okay */
++	if ((fb->width != (mode->hdisplay)) ||
++	    (fb->height != (mode->vdisplay))) {
++		dev_err(dev->dev, "wrong fb mode: %d*%d vs %d*%d\n",
++			fb->width, fb->height, mode->hdisplay, mode->vdisplay);
++		ret = -EINVAL;
++		goto done;
++	}
+ 
+-	mem[0] = sh->buff;
+-	mem[1] = 0;
+-	mem[2] = 0;
++	/* ...need to verify compatibility of output format, I guess - tbd */
+ 
+-	if (sh->width != mode->hdisplay ||
+-	    sh->height != mode->vdisplay)
+-		return -EINVAL;
++	/* ...fill memory planes addresses */
++	for (i = 0; i < 3; i++) {
++		struct drm_gem_cma_object  *gem;
++		struct sg_table *sgt = &sg_tables[i];
+ 
+-	if ((pitch * mode->vdisplay) > sh->buff_len)
+-		return -EINVAL;
++		gem = drm_fb_cma_get_gem_obj(fb, i);
++		if (!gem)
++			break;
++
++		ret = dma_get_sgtable(rcdu->dev, sgt, gem->vaddr, gem->paddr,
++				      gem->base.size);
++		if (ret)
++			goto done;
++
++		ret = vsp1_du_map_sg(rcrtc->vsp->vsp, sgt);
++		if (!ret) {
++			sg_free_table(sgt);
++			ret = -ENOMEM;
++			goto done;
++		}
++		mem[i] = sg_dma_address(sg_tables[i].sgl) + fb->offsets[i];
++	}
++
++	dev_info(dev->dev, "setup write-back (pixfmt=%X, %u*%u, planes: %d)\n",
++		 fb->format->format, fb->width, fb->height, i);
++
++	ret = vsp1_du_setup_wb(rcrtc->vsp->vsp, fb->format->format,
++			       fb->pitches[0], mem, rcrtc->vsp_pipe);
+ 
+-	ret = vsp1_du_setup_wb(rcrtc->vsp->vsp, pixelformat, pitch, mem,
+-			       rcrtc->vsp_pipe);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
+ 
+ 	ret = vsp1_du_wait_wb(rcrtc->vsp->vsp, WB_STAT_CATP_SET,
+ 			      rcrtc->vsp_pipe);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
+ 
+ 	ret = rcar_du_async_commit(dev, crtc);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
+ 
+ 	ret = vsp1_du_wait_wb(rcrtc->vsp->vsp, WB_STAT_CATP_START,
+ 			      rcrtc->vsp_pipe);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
+ 
+ 	ret = rcar_du_async_commit(dev, crtc);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
+ 
+ 	ret = vsp1_du_wait_wb(rcrtc->vsp->vsp, WB_STAT_CATP_DONE,
+ 			      rcrtc->vsp_pipe);
+ 	if (ret != 0)
+-		return ret;
++		goto done;
++
++done:
++	/* ...unmap all tables */
++	while (i--) {
++		struct sg_table *sgt = &sg_tables[i];
++
++		vsp1_du_unmap_sg(rcrtc->vsp->vsp, sgt);
++		sg_free_table(sgt);
++	}
++ 
++	drm_framebuffer_put(fb);
+ 
+ 	return ret;
+ }
+@@ -481,7 +586,38 @@ static int rcar_du_vsp_plane_atomic_set_property(struct drm_plane *plane,
+ 		rstate->colorkey = val;
+ 	else if (property == rcdu->props.colorkey_alpha)
+ 		rstate->colorkey_alpha = val;
+-	else
++	else if (property == rcdu->props.blend)
++		rstate->blend = val;
++	else if (property == rcdu->props.ckey)
++		rstate->ckey = val;
++	else if (property == rcdu->props.ckey_set0)
++		rstate->ckey_set0 = val;
++	else if (property == rcdu->props.ckey_set1)
++		rstate->ckey_set1 = val;
++	else if (property == rcdu->props.alphaplane) {
++		if (rstate->alphaplane) {
++			pr_debug("unref alpha-plane '%p' (refcount=%d)\n",
++				 rstate->alphaplane,
++				 drm_framebuffer_read_refcount(rstate->alphaplane));
++			drm_framebuffer_put(rstate->alphaplane);
++		}
++		rstate->alphaplane = drm_framebuffer_lookup(plane->dev, NULL, val);
++		if (rstate->alphaplane) {
++			pr_debug("use alpha-plane '%p' (refcount=%d)\n",
++				 rstate->alphaplane,
++				 drm_framebuffer_read_refcount(rstate->alphaplane));
++			/* ...the way how we handle this leads to a "loss"
++			 * of plane reference (it is acquired within
++			 * "drm_property_change_valid_get" but not returned
++			 * in symmetric "drm_property_change_valid_put")
++			 * Whether it is a bug or was done intentionally,
++			 * I don't know. For a moment just drop that
++			 * extra reference right here.
++			 */
++			if (0)
++				drm_framebuffer_put(rstate->alphaplane);
++		}
++	} else
+ 		return -EINVAL;
+ 
+ 	return 0;
+@@ -501,6 +637,16 @@ static int rcar_du_vsp_plane_atomic_get_property(struct drm_plane *plane,
+ 		*val = rstate->colorkey;
+ 	else if (property == rcdu->props.colorkey_alpha)
+ 		*val = rstate->colorkey_alpha;
++	else if (property == rcdu->props.alphaplane)
++		*val = (rstate->alphaplane ? rstate->alphaplane->base.id : 0);
++	else if (property == rcdu->props.blend)
++		*val = rstate->blend;
++	else if (property == rcdu->props.ckey)
++		*val = rstate->ckey;
++	else if (property == rcdu->props.ckey_set0)
++		*val = rstate->ckey_set0;
++	else if (property == rcdu->props.ckey_set1)
++		*val = rstate->ckey_set1;
+ 	else
+ 		return -EINVAL;
+ 
+@@ -607,7 +753,8 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 		drm_plane_helper_add(&plane->plane,
+ 				     &rcar_du_vsp_plane_helper_funcs);
+ 
+-		if (type == DRM_PLANE_TYPE_PRIMARY) {
++		/* Use the same set of properties for all planes */
++		if (0 || type == DRM_PLANE_TYPE_PRIMARY) {
+ 			drm_plane_create_zpos_immutable_property(&plane->plane,
+ 								 0);
+ 		} else {
+@@ -622,6 +769,16 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 							   0);
+ 			drm_plane_create_zpos_property(&plane->plane, 1, 1,
+ 						       vsp->num_planes - 1);
++			drm_object_attach_property(&plane->plane.base,
++						   rcdu->props.alphaplane, 0);
++			drm_object_attach_property(&plane->plane.base,
++						   rcdu->props.blend, 0);
++			drm_object_attach_property(&plane->plane.base,
++						   rcdu->props.ckey, 0);
++			drm_object_attach_property(&plane->plane.base,
++						   rcdu->props.ckey_set0, 0);
++			drm_object_attach_property(&plane->plane.base,
++						   rcdu->props.ckey_set1, 0);
+ 		}
+ 	}
+ 
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_vsp.h b/drivers/gpu/drm/rcar-du/rcar_du_vsp.h
+index ce72822..4bf3901 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_vsp.h
++++ b/drivers/gpu/drm/rcar-du/rcar_du_vsp.h
+@@ -52,11 +52,16 @@ struct rcar_du_vsp_plane_state {
+ 	struct drm_plane_state state;
+ 
+ 	const struct rcar_du_format_info *format;
+-	struct sg_table sg_tables[3];
++	struct sg_table sg_tables[4];
+ 
+ 	unsigned int alpha;
+ 	u32 colorkey;
+ 	u32 colorkey_alpha;
++	struct drm_framebuffer *alphaplane;
++	unsigned int blend;
++	unsigned int ckey;
++	unsigned int ckey_set0;
++	unsigned int ckey_set1;
+ };
+ 
+ static inline struct rcar_du_vsp_plane_state *
+@@ -77,9 +82,9 @@ int rcar_du_set_vmute(struct drm_device *dev, void *data,
+ int rcar_du_vsp_write_back(struct drm_device *dev, void *data,
+ 			   struct drm_file *file_priv);
+ int rcar_du_vsp_map_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+-		       struct sg_table sg_tables[3]);
++		       struct sg_table sg_tables[3], struct rcar_du_vsp_plane_state *rstate);
+ void rcar_du_vsp_unmap_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
+-			  struct sg_table sg_tables[3]);
++			  struct sg_table sg_tables[3], struct rcar_du_vsp_plane_state *rstate);
+ #else
+ static inline int rcar_du_vsp_init(struct rcar_du_vsp *vsp,
+ 				   struct device_node *np,
+@@ -100,13 +105,15 @@ static inline int rcar_du_vsp_write_back(struct drm_device *dev, void *data,
+ };
+ static inline int rcar_du_vsp_map_fb(struct rcar_du_vsp *vsp,
+ 				     struct drm_framebuffer *fb,
+-				     struct sg_table sg_tables[3])
++				     struct sg_table sg_tables[3],
++				     struct rcar_du_vsp_plane_state *rstate)
+ {
+ 	return -ENXIO;
+ }
+ static inline void rcar_du_vsp_unmap_fb(struct rcar_du_vsp *vsp,
+ 					struct drm_framebuffer *fb,
+-					struct sg_table sg_tables[3])
++					struct sg_table sg_tables[3],
++					struct rcar_du_vsp_plane_state *rstate)
+ {
+ }
+ #endif
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_writeback.c b/drivers/gpu/drm/rcar-du/rcar_du_writeback.c
+index 04efa78d..95fd246 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_writeback.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_writeback.c
+@@ -60,7 +60,7 @@ static int rcar_du_wb_prepare_job(struct drm_writeback_connector *connector,
+ 		return -ENOMEM;
+ 
+ 	/* Map the framebuffer to the VSP. */
+-	ret = rcar_du_vsp_map_fb(rcrtc->vsp, job->fb, rjob->sg_tables);
++	ret = rcar_du_vsp_map_fb(rcrtc->vsp, job->fb, rjob->sg_tables, NULL);
+ 	if (ret < 0) {
+ 		kfree(rjob);
+ 		return ret;
+@@ -79,7 +79,7 @@ static void rcar_du_wb_cleanup_job(struct drm_writeback_connector *connector,
+ 	if (!job->fb)
+ 		return;
+ 
+-	rcar_du_vsp_unmap_fb(rcrtc->vsp, job->fb, rjob->sg_tables);
++	rcar_du_vsp_unmap_fb(rcrtc->vsp, job->fb, rjob->sg_tables, NULL);
+ 	kfree(rjob);
+ }
+ 
+diff --git a/include/media/vsp1.h b/include/media/vsp1.h
+index ddb3ff0..c78e966 100644
+--- a/include/media/vsp1.h
++++ b/include/media/vsp1.h
+@@ -67,6 +67,11 @@ struct vsp1_du_atomic_config {
+ 	u32 pixelformat;
+ 	unsigned int pitch;
+ 	dma_addr_t mem[3];
++	dma_addr_t alpha_mem;
++	unsigned int alpha_pitch;
++	unsigned int ckey;
++	unsigned int ckey_set0;
++	unsigned int ckey_set1;
+ 	struct v4l2_rect src;
+ 	struct v4l2_rect dst;
+ 	unsigned int alpha;
+@@ -74,6 +79,7 @@ struct vsp1_du_atomic_config {
+ 	u32 colorkey;
+ 	u32 colorkey_alpha;
+ 	bool colorkey_en;
++	unsigned int blend;
+ };
+ 
+ /**
+-- 
+2.7.4
+

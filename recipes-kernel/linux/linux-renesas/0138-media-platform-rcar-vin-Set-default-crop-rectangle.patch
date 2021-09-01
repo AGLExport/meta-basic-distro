@@ -1,0 +1,32 @@
+From 23d50b393b2846804956a8608c05bdb16f2522e9 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 15 Jan 2021 04:33:38 +0300
+Subject: [PATCH] media: platform: rcar-vin: Set default crop rectangle
+
+Even in media controller mode, we still need to initialize
+the default crop rectangle. Otherwise, zero rectangle size
+is treated as if cropping was not supported.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/media/platform/rcar-vin/rcar-v4l2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+index 513eebd..00ce8e53 100644
+--- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
++++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+@@ -1012,6 +1012,10 @@ int rvin_v4l2_register(struct rvin_dev *vin)
+ 	vin->format.height = RVIN_DEFAULT_HEIGHT;
+ 	vin->format.field = RVIN_DEFAULT_FIELD;
+ 	vin->format.colorspace = RVIN_DEFAULT_COLORSPACE;
++	vin->source.top = 0;
++	vin->source.left = 0;
++	vin->source.width = vin->format.width;
++	vin->source.height = vin->format.height;
+ 
+ 	if (vin->info->use_mc) {
+ 		vdev->ioctl_ops = &rvin_mc_ioctl_ops;
+-- 
+2.7.4
+

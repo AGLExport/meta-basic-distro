@@ -1,0 +1,30 @@
+From 40ea467dda9744bfe818081597c823ab8c960e83 Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Wed, 7 Oct 2020 16:30:28 +0300
+Subject: [PATCH] pci: pcie-rcar: Fix bus notifier for dma range limit
+
+This fixes the dma range fixup, since the bus_dma_mask
+controls the DMA range limit for upstream bus.
+
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+ drivers/pci/controller/pcie-rcar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
+index 0b4aa9c..4dc2ad7 100644
+--- a/drivers/pci/controller/pcie-rcar.c
++++ b/drivers/pci/controller/pcie-rcar.c
+@@ -1447,7 +1447,7 @@ static int rcar_pcie_pci_notifier(struct notifier_block *nb,
+ 	switch (action) {
+ 	case BUS_NOTIFY_BOUND_DRIVER:
+ 		/* Force the DMA mask to lower 32-bits */
+-		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
++		dev->bus_dma_mask = DMA_BIT_MASK(32);
+ 		break;
+ 	default:
+ 		return NOTIFY_DONE;
+-- 
+2.7.4
+

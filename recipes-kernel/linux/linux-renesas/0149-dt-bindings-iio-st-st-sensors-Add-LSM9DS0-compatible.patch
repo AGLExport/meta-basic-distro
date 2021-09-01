@@ -1,0 +1,36 @@
+From fba3b4e50ef291c418de1ef97f04afa645e5fbbf Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Wed, 14 Apr 2021 22:54:54 +0300
+Subject: [PATCH 52/61] dt-bindings: iio: st,st-sensors: Add LSM9DS0 compatible
+ string
+
+Enumerate LSM9DS0 (accelerometer and magnetometer parts) via
+'st,lsm9ds0-imu' compatible string.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Rob Herring <robh@kernel.org>
+
+Moved changes to st-sensors.txt instead of st,st-sensors.yaml
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ Documentation/devicetree/bindings/iio/st-sensors.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/st-sensors.txt b/Documentation/devicetree/bindings/iio/st-sensors.txt
+index 3213599..7f073742 100644
+--- a/Documentation/devicetree/bindings/iio/st-sensors.txt
++++ b/Documentation/devicetree/bindings/iio/st-sensors.txt
+@@ -52,6 +52,9 @@ Accelerometers:
+ - st,lis2de12
+ - st,lis2hh12
+ 
++IMU:
++- st,lsm9ds0-imu
++
+ Gyroscopes:
+ - st,l3g4200d-gyro
+ - st,lsm330d-gyro
+-- 
+2.7.4
+

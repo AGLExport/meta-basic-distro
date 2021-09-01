@@ -1,0 +1,39 @@
+From 21828b79aa192bdb3a583d878c87b2603d22eb7e Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Sat, 23 May 2020 05:40:13 +0300
+Subject: [PATCH] arm64: dts: renesas: ulcb-kf: deselect GP5_9 interrupt
+
+Since GP5_9 is setup in ATF as output and now linux picks
+up the inital value from gpio controller, hence it is not
+possible to request GPIO as IRQ.
+
+Optionl workaround in uboot:
+mw 0xe6055004 0xe
+
+This should be fixed in uboot dts
+
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 5fb71d1..9ab160c 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -970,10 +970,11 @@
+ 		reg = <0x77>;
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
++/*
+ 		interrupt-controller;
+ 		interrupt-parent = <&gpio5>;
+ 		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+-
++*/
+ 		mpcie_wake {
+ 			gpio-hog;
+ 			gpios = <0 GPIO_ACTIVE_HIGH>;
+-- 
+2.7.4
+

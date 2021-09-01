@@ -1,0 +1,114 @@
+From 81c01dce7b15697fe6326e04c43fba1efd3535af Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Mon, 28 Sep 2020 19:27:57 +0300
+Subject: [PATCH] pci: pcie-rcar: add regulators support
+
+Add PCIE regulators
+
+Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+---
+ drivers/pci/controller/pcie-rcar.c | 59 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
+index 3d615b2..dc945e7 100644
+--- a/drivers/pci/controller/pcie-rcar.c
++++ b/drivers/pci/controller/pcie-rcar.c
+@@ -14,6 +14,7 @@
+ #include <linux/bitops.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
+@@ -160,6 +161,8 @@ struct rcar_pcie {
+ 	struct list_head	resources;
+ 	int			root_bus_nr;
+ 	struct clk		*bus_clk;
++	struct regulator	*pcie3v3; /* 3.3V power supply */
++	struct regulator	*pcie1v8; /* 1.8V power supply */
+ 	struct			rcar_msi msi;
+ };
+ 
+@@ -1195,6 +1198,41 @@ static const struct of_device_id rcar_pcie_of_match[] = {
+ 	{},
+ };
+ 
++static int rcar_pcie_set_vpcie(struct rcar_pcie *pcie, int enable)
++{
++	struct device *dev = pcie->dev;
++	int err;
++
++	if (!IS_ERR(pcie->pcie3v3)) {
++		if (enable)
++			err = regulator_enable(pcie->pcie3v3);
++		else
++			err = regulator_disable(pcie->pcie3v3);
++		if (err) {
++			dev_err(dev, "fail to set vpcie3v3 regulator\n");
++			return err;
++		}
++	}
++
++	if (!IS_ERR(pcie->pcie1v8)) {
++		if (enable)
++			err = regulator_enable(pcie->pcie1v8);
++		else
++			err = regulator_disable(pcie->pcie1v8);
++		if (err) {
++			dev_err(dev, "fail to set vpcie1v8 regulator\n");
++			goto err_disable_3v3;
++		}
++	}
++
++	return 0;
++
++err_disable_3v3:
++	if (!IS_ERR(pcie->pcie3v3))
++		regulator_disable(pcie->pcie3v3);
++	return err;
++}
++
+ static int rcar_pcie_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -1213,6 +1251,26 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 	pcie->dev = dev;
+ 	platform_set_drvdata(pdev, pcie);
+ 
++	pcie->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
++	if (IS_ERR(pcie->pcie3v3)) {
++		if (PTR_ERR(pcie->pcie3v3) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		dev_info(dev, "no pcie3v3 regulator found\n");
++	}
++
++	pcie->pcie1v8 = devm_regulator_get_optional(dev, "pcie1v8");
++	if (IS_ERR(pcie->pcie1v8)) {
++		if (PTR_ERR(pcie->pcie1v8) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		dev_info(dev, "no pcie1v8 regulator found\n");
++	}
++
++	err = rcar_pcie_set_vpcie(pcie, 1);
++	if (err) {
++		dev_err(dev, "failed to set pcie regulators\n");
++		return err;
++	}
++
+ 	err = pci_parse_request_of_pci_ranges(dev, &pcie->resources, NULL);
+ 	if (err)
+ 		goto err_free_bridge;
+@@ -1299,6 +1357,7 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 
+ err_free_bridge:
+ 	pci_free_host_bridge(bridge);
++	rcar_pcie_set_vpcie(pcie, 0);
+ 
+ 	return err;
+ }
+-- 
+2.7.4
+

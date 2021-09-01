@@ -1,0 +1,65 @@
+From d647309d1db53d86350ca6434c63c584f7a445af Mon Sep 17 00:00:00 2001
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Date: Thu, 22 Oct 2020 22:16:32 +0300
+Subject: [PATCH 04/12] arm64: dts: r8a77980: fix vin4-7 binding
+
+This fixes the bindings in media framework:
+The CSI40 is port number 2
+The CSI41 is port number 3
+
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/r8a77980.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980.dtsi b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
+index 1cde619..f46a8b1 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
+@@ -1018,8 +1018,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin4csi41: endpoint@2 {
+-						reg = <2>;
++					vin4csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin4>;
+ 					};
+ 				};
+@@ -1046,8 +1046,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin5csi41: endpoint@2 {
+-						reg = <2>;
++					vin5csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin5>;
+ 					};
+ 				};
+@@ -1074,8 +1074,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin6csi41: endpoint@2 {
+-						reg = <2>;
++					vin6csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin6>;
+ 					};
+ 				};
+@@ -1102,8 +1102,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin7csi41: endpoint@2 {
+-						reg = <2>;
++					vin7csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin7>;
+ 					};
+ 				};
+-- 
+2.7.4
+

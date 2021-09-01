@@ -1,0 +1,76 @@
+From f2c4ff65896a014bcdf772d79877a8a7d10ed4fd Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Tue, 22 Sep 2020 22:11:15 +0300
+Subject: [PATCH 03/22] arm64: dts: r8a77980-v3hsk: Enable onboard eMMC
+
+This adds the eMMC device node in the r8a77980-v3hsk.dts.
+
+Signed-off-by: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts | 35 ++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+index 1203695..b020a0d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+@@ -86,6 +86,15 @@
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
++
++	vddq_vin01: regulator-2 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDQ_VIN01";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
+ };
+ 
+ &du {
+@@ -177,6 +186,20 @@
+ 	};
+ };
+ 
++&mmc0 {
++	/* used for on-board eMMC */
++	pinctrl-0 = <&mmc_pins>;
++	pinctrl-1 = <&mmc_pins_uhs>;
++	pinctrl-names = "default", "state_uhs";
++
++	vmmc-supply = <&vcc3v3_d5>;
++	vqmmc-supply = <&vddq_vin01>;
++	mmc-hs200-1_8v;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
+ &pfc {
+ 	gether_pins: gether {
+ 		groups = "gether_mdio_a", "gether_rgmii",
+@@ -189,6 +212,18 @@
+ 		function = "i2c0";
+ 	};
+ 
++	mmc_pins: mmc {
++		groups = "mmc_data8", "mmc_ctrl", "mmc_ds";
++		function = "mmc";
++		power-source = <3300>;
++	};
++
++	mmc_pins_uhs: mmc_uhs {
++		groups = "mmc_data8", "mmc_ctrl", "mmc_ds";
++		function = "mmc";
++		power-source = <1800>;
++	};
++
+ 	scif0_pins: scif0 {
+ 		groups = "scif0_data";
+ 		function = "scif0";
+-- 
+2.7.4
+

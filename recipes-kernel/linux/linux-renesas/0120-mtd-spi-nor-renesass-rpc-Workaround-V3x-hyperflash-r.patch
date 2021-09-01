@@ -1,0 +1,83 @@
+From 61f10ccb58585df095db75f9271a81eb4df0cb54 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Tue, 24 Nov 2020 00:17:41 +0300
+Subject: [PATCH] mtd: spi-nor: renesass-rpc: Workaround V3x hyperflash read
+ issue
+
+When read burst length is non-zero, the first two bytes are skipped
+while reading from the RPC HyperFlash on the V3HSK and V3MSK boards.
+Introduce RPC_ZERO_HF_READ_BURST quirk and use it to set zero burst
+length on the V3H and V3M SoCs.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/mtd/spi-nor/renesas-rpc-hyperflash.c | 4 +++-
+ drivers/mtd/spi-nor/renesas-rpc.c            | 8 ++++++--
+ drivers/mtd/spi-nor/renesas-rpc.h            | 2 ++
+ 3 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/renesas-rpc-hyperflash.c b/drivers/mtd/spi-nor/renesas-rpc-hyperflash.c
+index 21b0f87..5caa547 100644
+--- a/drivers/mtd/spi-nor/renesas-rpc-hyperflash.c
++++ b/drivers/mtd/spi-nor/renesas-rpc-hyperflash.c
+@@ -118,7 +118,9 @@ static void rpc_hf_mode_ext(struct rpc_info *rpc)
+ 	 * bit8 RBE             = 1     : Read burst enable
+ 	 */
+ 	rpc_writel(rpc, RPC_DRCR,
+-		   RPC_DRCR_RBURST(0x1F) | RPC_DRCR_RCF | RPC_DRCR_RBE);
++		   rpc->flags & RPC_HF_ZERO_READ_BURST ?
++		   RPC_DRCR_RCF | RPC_DRCR_RBE | RPC_DRCR_RBURST(0x0) :
++		   RPC_DRCR_RCF | RPC_DRCR_RBE | RPC_DRCR_RBURST(0x1F));
+ 
+ 	rpc_writel(rpc, RPC_DRCMR, RPC_DRCMR_CMD(0xA0));
+ 	rpc_writel(rpc, RPC_DRENR,
+diff --git a/drivers/mtd/spi-nor/renesas-rpc.c b/drivers/mtd/spi-nor/renesas-rpc.c
+index 3aea0ae..971a6a2 100644
+--- a/drivers/mtd/spi-nor/renesas-rpc.c
++++ b/drivers/mtd/spi-nor/renesas-rpc.c
+@@ -250,6 +250,7 @@ static int rpc_probe(struct platform_device *pdev)
+ 		return -ENOTSUPP;
+ 	}
+ 
++	rpc->flags = (uintptr_t)of_device_get_match_data(&pdev->dev);
+ 	rpc->mtdtype = of_find_property(pdev->dev.of_node, "dual", NULL) ?
+ 		       RPC_DUAL : RPC_SINGLE;
+ 
+@@ -334,9 +335,12 @@ static const struct of_device_id rpc_of_match[] = {
+ 	{ .compatible = "renesas,rpc-r8a77965" },
+ 	{
+ 		.compatible = "renesas,rpc-r8a77970",
+-		.data = (void *)RPC_OWN_CLOCK_DIVIDER,
++		.data = (void *)(RPC_OWN_CLOCK_DIVIDER | RPC_HF_ZERO_READ_BURST),
++	},
++	{
++		.compatible = "renesas,rpc-r8a77980",
++		.data = (void *)RPC_HF_ZERO_READ_BURST,
+ 	},
+-	{ .compatible = "renesas,rpc-r8a77980" },
+ 	{ },
+ };
+ 
+diff --git a/drivers/mtd/spi-nor/renesas-rpc.h b/drivers/mtd/spi-nor/renesas-rpc.h
+index e500a62..2124b7b 100644
+--- a/drivers/mtd/spi-nor/renesas-rpc.h
++++ b/drivers/mtd/spi-nor/renesas-rpc.h
+@@ -188,6 +188,7 @@
+ 
+ /* Device flags */
+ #define RPC_OWN_CLOCK_DIVIDER	BIT(0)
++#define RPC_HF_ZERO_READ_BURST	BIT(1)
+ 
+ enum rpc_size {
+ 	/* singe flash: 8 bit; dual flash: 16 bit */
+@@ -218,6 +219,7 @@ struct rpc_info {
+ 	struct clk *clk;
+ 	unsigned int irq;
+ 	enum rpc_type mtdtype;
++	u32 flags;
+ };
+ 
+ /* Register access */
+-- 
+2.7.4
+

@@ -1,0 +1,78 @@
+From 9cf9f21e2f23beff0677715275b00e38efa99ec8 Mon Sep 17 00:00:00 2001
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Date: Wed, 27 May 2020 14:16:49 +0200
+Subject: [PATCH] media: rcar-vin: Add support for MEDIA_BUS_FMT_SRGGB8_1X8
+ format
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add support for MEDIA_BUS_FMT_SRGGB8_1X8 format in rcar-vin by setting
+format type to RAW8 in VNMC register and appropriately setting the bpp
+and bytesperline to enable V4L2_PIX_FMT_SRGGB8.
+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/rcar-vin/rcar-dma.c  | 13 +++++++++++++
+ drivers/media/platform/rcar-vin/rcar-v4l2.c |  4 ++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index 49bdc25..6e12a33 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -734,6 +734,13 @@ static void rvin_crop_scale_comp(struct rvin_dev *vin)
+ 
+ 	fmt = rvin_format_from_pixel(vin, vin->format.pixelformat);
+ 	stride = vin->format.bytesperline / fmt->bpp;
++
++	/* For RAW8 format bpp is 1, but the hardware process RAW8
++	 * format in 2 pixel unit hence configure VNIS_REG as stride / 2.
++	 */
++	if (vin->format.pixelformat == V4L2_PIX_FMT_SRGGB8)
++		stride /= 2;
++
+ 	rvin_write(vin, stride, VNIS_REG);
+ }
+ 
+@@ -832,6 +839,9 @@ static int rvin_setup(struct rvin_dev *vin)
+ 
+ 		input_is_yuv = true;
+ 		break;
++	case MEDIA_BUS_FMT_SRGGB8_1X8:
++		vnmc |= VNMC_INF_RAW8;
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -898,6 +908,9 @@ static int rvin_setup(struct rvin_dev *vin)
+ 	case V4L2_PIX_FMT_ABGR32:
+ 		dmr = VNDMR_A8BIT(vin->alpha) | VNDMR_EXRGB | VNDMR_DTMD_ARGB;
+ 		break;
++	case V4L2_PIX_FMT_SRGGB8:
++		dmr = 0;
++		break;
+ 	default:
+ 		vin_err(vin, "Invalid pixelformat (0x%x)\n",
+ 			vin->format.pixelformat);
+diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+index f51e087..fb39b38 100644
+--- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
++++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+@@ -66,6 +66,10 @@ static const struct rvin_video_format rvin_formats[] = {
+ 		.fourcc			= V4L2_PIX_FMT_ABGR32,
+ 		.bpp			= 4,
+ 	},
++	{
++		.fourcc			= V4L2_PIX_FMT_SRGGB8,
++		.bpp			= 1,
++	},
+ };
+ 
+ const struct rvin_video_format *rvin_format_from_pixel(struct rvin_dev *vin,
+-- 
+2.7.4
+

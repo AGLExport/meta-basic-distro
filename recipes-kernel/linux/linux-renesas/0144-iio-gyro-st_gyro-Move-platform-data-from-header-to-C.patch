@@ -1,0 +1,59 @@
+From 6052e822a9c1f3c3102529e3a3ab0fab23a1055b Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Wed, 14 Apr 2021 22:54:49 +0300
+Subject: [PATCH 47/61] iio: gyro: st_gyro: Move platform data from header to C
+ file
+
+Platform data is solely used by one file. Don't share it with others.
+
+While at it, drop unneeded anymore __maybe_unused and fix kernel doc
+to avoid warning:
+
+  st_gyro_core.c:366: error: Cannot parse struct or union!
+
+by converting to a simple comment. It is described at the declaration.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/iio/gyro/st_gyro.h      | 8 --------
+ drivers/iio/gyro/st_gyro_core.c | 5 +++++
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/iio/gyro/st_gyro.h b/drivers/iio/gyro/st_gyro.h
+index fd9171c..b385fe6 100644
+--- a/drivers/iio/gyro/st_gyro.h
++++ b/drivers/iio/gyro/st_gyro.h
+@@ -24,14 +24,6 @@
+ #define LSM330_GYRO_DEV_NAME		"lsm330_gyro"
+ #define LSM9DS0_GYRO_DEV_NAME		"lsm9ds0_gyro"
+ 
+-/**
+- * struct st_sensors_platform_data - gyro platform data
+- * @drdy_int_pin: DRDY on gyros is available only on INT2 pin.
+- */
+-static __maybe_unused const struct st_sensors_platform_data gyro_pdata = {
+-	.drdy_int_pin = 2,
+-};
+-
+ const struct st_sensor_settings *st_gyro_get_settings(const char *name);
+ int st_gyro_common_probe(struct iio_dev *indio_dev);
+ void st_gyro_common_remove(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/gyro/st_gyro_core.c b/drivers/iio/gyro/st_gyro_core.c
+index c8aa051..e000504 100644
+--- a/drivers/iio/gyro/st_gyro_core.c
++++ b/drivers/iio/gyro/st_gyro_core.c
+@@ -357,6 +357,11 @@ static const struct st_sensor_settings st_gyro_sensors_settings[] = {
+ 	},
+ };
+ 
++/* DRDY on gyros is available only on INT2 pin */
++static const struct st_sensors_platform_data gyro_pdata = {
++	.drdy_int_pin = 2,
++};
++
+ static int st_gyro_read_raw(struct iio_dev *indio_dev,
+ 			struct iio_chan_spec const *ch, int *val,
+ 							int *val2, long mask)
+-- 
+2.7.4
+

@@ -1,0 +1,73 @@
+From 8e848a2022ea0b1df398f7278a201faccadf1379 Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Wed, 14 Apr 2021 22:54:50 +0300
+Subject: [PATCH 48/61] iio: magnetometer: st_magn: Provide default platform
+ data
+
+Provide default platform data for magnetometer in case it supports DRDY.
+
+One case is LSM9DS0 IMU, on which it is the case. Since accelerometer
+is using INT1, default magnetometer to INT2.
+
+While at it, update description of the drdy_int_pin field.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/iio/magnetometer/st_magn_core.c        | 11 ++++++++++-
+ include/linux/platform_data/st_sensors_pdata.h |  3 ++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
+index 79de721..cf3722e 100644
+--- a/drivers/iio/magnetometer/st_magn_core.c
++++ b/drivers/iio/magnetometer/st_magn_core.c
+@@ -382,6 +382,11 @@ static const struct st_sensor_settings st_magn_sensors_settings[] = {
+ 	},
+ };
+ 
++/* Default magn DRDY is available on INT2 pin */
++static const struct st_sensors_platform_data default_magn_pdata = {
++	.drdy_int_pin = 2,
++};
++
+ static int st_magn_read_raw(struct iio_dev *indio_dev,
+ 			struct iio_chan_spec const *ch, int *val,
+ 							int *val2, long mask)
+@@ -489,6 +494,7 @@ EXPORT_SYMBOL(st_magn_get_settings);
+ int st_magn_common_probe(struct iio_dev *indio_dev)
+ {
+ 	struct st_sensor_data *mdata = iio_priv(indio_dev);
++	struct st_sensors_platform_data *pdata = dev_get_platdata(mdata->dev);
+ 	int err;
+ 
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+@@ -509,7 +515,10 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
+ 	mdata->current_fullscale = &mdata->sensor_settings->fs.fs_avl[0];
+ 	mdata->odr = mdata->sensor_settings->odr.odr_avl[0].hz;
+ 
+-	err = st_sensors_init_sensor(indio_dev, NULL);
++	if (!pdata)
++		pdata = (struct st_sensors_platform_data *)&default_magn_pdata;
++
++	err = st_sensors_init_sensor(indio_dev, pdata);
+ 	if (err < 0)
+ 		goto st_magn_power_off;
+ 
+diff --git a/include/linux/platform_data/st_sensors_pdata.h b/include/linux/platform_data/st_sensors_pdata.h
+index e40b28c..897051e 100644
+--- a/include/linux/platform_data/st_sensors_pdata.h
++++ b/include/linux/platform_data/st_sensors_pdata.h
+@@ -13,8 +13,9 @@
+ /**
+  * struct st_sensors_platform_data - Platform data for the ST sensors
+  * @drdy_int_pin: Redirect DRDY on pin 1 (1) or pin 2 (2).
+- *	Available only for accelerometer and pressure sensors.
++ *	Available only for accelerometer, magnetometer and pressure sensors.
+  *	Accelerometer DRDY on LSM330 available only on pin 1 (see datasheet).
++ *	Magnetometer DRDY is supported only on LSM9DS0.
+  * @open_drain: set the interrupt line to be open drain if possible.
+  * @spi_3wire: enable spi-3wire mode.
+  * @pullups: enable/disable i2c controller pullup resistors.
+-- 
+2.7.4
+

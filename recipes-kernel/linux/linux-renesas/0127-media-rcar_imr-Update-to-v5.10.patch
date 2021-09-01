@@ -1,0 +1,113 @@
+From bd80d334273cd251ad579fa70e6405d49e5af226 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Tue, 29 Sep 2020 21:09:00 +0300
+Subject: [PATCH 39/61] media: rcar_imr: Update to v5.10
+
+This applies the following changes:
+
+v5.10:
+
+  * fix Kconfig help statement declaration;
+  * change VFL_TYPE_GRABBER to VFL_TYPE_VIDEO;
+  * add linux/dma-map-ops.h to fix arch_setup_dma_ops warning.
+
+v5.4:
+
+  * use dma_(alloc|free)_wc instead of dma_(alloc|free)_writecombine;
+  * disable [gs]_crop ioctl callback since those are deprecated;
+  * initialize imr->video_dev.device_caps before registering video
+    device to prevent run-time kernel warning.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/media/platform/Kconfig    |  2 +-
+ drivers/media/platform/rcar_imr.c | 15 ++++++++++++---
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index c320a8b..41d04d4b 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -452,7 +452,7 @@ config VIDEO_RENESAS_IMR
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
+-	---help---
++	help
+ 	  This is a V4L2 driver for the Renesas IMR-X2/LX2/LX4 Processing Unit.
+ 
+ 	  To compile this driver as a module, choose M here: the module
+diff --git a/drivers/media/platform/rcar_imr.c b/drivers/media/platform/rcar_imr.c
+index aca1ec3..808f9a8 100644
+--- a/drivers/media/platform/rcar_imr.c
++++ b/drivers/media/platform/rcar_imr.c
+@@ -16,6 +16,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/delay.h>
++#include <linux/dma-map-ops.h>
+ #include <linux/rcar-imr.h>
+ #include <linux/of.h>
+ #include <media/v4l2-device.h>
+@@ -357,7 +358,7 @@ static struct imr_cfg * imr_cfg_create(struct imr_ctx *ctx, u32 dl_size, u32 dl_
+ 	}
+ 
+ 	/* ...allocate contiguous memory for a display list */
+-	cfg->dl_vaddr = dma_alloc_writecombine(imr->dev, dl_size, &cfg->dl_dma_addr, GFP_KERNEL);
++	cfg->dl_vaddr = dma_alloc_wc(imr->dev, dl_size, &cfg->dl_dma_addr, GFP_KERNEL);
+ 	if (!cfg->dl_vaddr) {
+ 		v4l2_err(&imr->v4l2_dev, "failed to allocate %u bytes for a DL\n", dl_size);
+ 		kfree(cfg);
+@@ -396,7 +397,7 @@ static void imr_cfg_unref(struct imr_ctx *ctx, struct imr_cfg *cfg)
+ 
+ 	/* ...release memory allocated for a display list */
+ 	if (cfg->dl_vaddr)
+-		dma_free_writecombine(imr->dev, cfg->dl_size, cfg->dl_vaddr, cfg->dl_dma_addr);
++		dma_free_wc(imr->dev, cfg->dl_size, cfg->dl_vaddr, cfg->dl_dma_addr);
+ 
+ 	/* ...destroy the configuration structure */
+ 	kfree(cfg);
+@@ -1473,6 +1474,7 @@ static int imr_streamoff(struct file *file, void *priv, enum v4l2_buf_type type)
+ 	return v4l2_m2m_streamoff(file, ctx->m2m_ctx, type);
+ }
+ 
++#if 0
+ static int imr_g_crop(struct file *file, void *priv, struct v4l2_crop *cr)
+ {
+ 	struct imr_ctx  *ctx = fh_to_ctx(priv);
+@@ -1507,6 +1509,7 @@ static int imr_s_crop(struct file *file, void *priv, const struct v4l2_crop *cr)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ /* ...customized I/O control processing */
+ static long imr_default(struct file *file, void *fh, bool valid_prio, unsigned int cmd, void *arg)
+@@ -1559,8 +1562,10 @@ static const struct v4l2_ioctl_ops imr_ioctl_ops = {
+ 	.vidioc_streamon            = imr_streamon,
+ 	.vidioc_streamoff           = imr_streamoff,
+ 
++#if 0
+ 	.vidioc_g_crop              = imr_g_crop,
+ 	.vidioc_s_crop              = imr_s_crop,
++#endif
+ 
+ 	.vidioc_default             = imr_default,
+ };
+@@ -2057,8 +2062,12 @@ static int imr_probe(struct platform_device *pdev)
+ 	imr->video_dev.lock         = &imr->mutex;
+ 	imr->video_dev.v4l2_dev     = &imr->v4l2_dev;
+ 	imr->video_dev.vfl_dir      = VFL_DIR_M2M;
++	imr->video_dev.device_caps  = V4L2_CAP_VIDEO_CAPTURE |
++				      V4L2_CAP_VIDEO_OUTPUT |
++				      V4L2_CAP_VIDEO_M2M |
++				      V4L2_CAP_STREAMING;
+ 
+-	ret = video_register_device(&imr->video_dev, VFL_TYPE_GRABBER, -1);
++	ret = video_register_device(&imr->video_dev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+ 		v4l2_err(&imr->v4l2_dev, "Failed to register video device\n");
+ 		goto m2m_init_rollback;
+-- 
+2.7.4
+

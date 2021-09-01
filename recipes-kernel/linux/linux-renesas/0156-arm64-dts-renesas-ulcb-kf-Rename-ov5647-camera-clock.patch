@@ -1,0 +1,30 @@
+From 48d964a594a2a4a4263dfa34e13c18eed9bf2b17 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Fri, 28 May 2021 02:52:09 +0300
+Subject: [PATCH 59/61] arm64: dts: renesas: ulcb-kf: Rename ov5647 camera
+ clock
+
+This renames ov5647 RPi camera clock to avoid name collision
+with the ov5642 CMOS camera clock.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index f995afa..8b112da 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -221,7 +221,7 @@
+ 		clock-output-names = "mclk";
+ 	};
+ 
+-	ov5647_camera_clk: camera_clk {
++	ov5647_camera_clk: ov5647_camera_clk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+ 		clock-frequency = <25000000>;
+-- 
+2.7.4
+

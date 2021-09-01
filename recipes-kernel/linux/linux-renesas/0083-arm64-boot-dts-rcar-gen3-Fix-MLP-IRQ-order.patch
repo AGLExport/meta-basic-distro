@@ -1,0 +1,33 @@
+From 2cc724791408cef43f6fabdf208c85f937819a1f Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Tue, 10 Nov 2020 21:07:35 +0300
+Subject: [PATCH] arm64: boot: dts: rcar-gen3: Fix MLP IRQ order
+
+The most driver expects the following IRQ order: MLB, AHB0.
+Move MLB IRQ 384 to the beginning of the IRQ list in the
+R-Car Gen3 mlp device nodes.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/r8a77960.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+index 0684772..fae74f9 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+@@ -1881,9 +1881,9 @@
+ 		mlp: mlp@ec520000 {
+ 			compatible = "rcar,medialb-dim2";
+ 			reg = <0 0xec520000 0 0x800>;
+-			interrupts = <GIC_SPI 385 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts = <GIC_SPI 384 IRQ_TYPE_LEVEL_HIGH>,
++				<GIC_SPI 385 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 386 IRQ_TYPE_LEVEL_HIGH>,
+-				<GIC_SPI 384 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 387 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 388 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cpg CPG_MOD 802>;
+-- 
+2.7.4
+

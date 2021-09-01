@@ -1,0 +1,86 @@
+From a594842e2a2fb877dfb95ea08a17d517430a64b1 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Tue, 22 Sep 2020 21:59:51 +0300
+Subject: [PATCH 02/22] arm64: dts: renesas: v3x: Set thc63lvd1024 dual link
+ mode
+
+This changes THC63LVD1024 LVDS decoder input port from 0 to 1
+which enables dual-in, single-out link mode.
+
+The THC63LVD1024 pixel rate range is 8 to 135 MHz in all modes
+but dual-in, single-out where it is 40 to 150 MHz.
+
+Enabling pixel rate up to 150MHz allows FullHD mode on all V3x
+boards. Otherwise, the maximum resolution is just 1280x1024.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/r8a77970-eagle.dts  | 4 ++--
+ arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts  | 4 ++--
+ arch/arm64/boot/dts/renesas/r8a77980-condor.dts | 4 ++--
+ arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts  | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+index 609b9a7..6e092e5 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+@@ -54,8 +54,8 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
+-				reg = <0>;
++			port@1 {
++				reg = <1>;
+ 				thc63lvd1024_in: endpoint {
+ 					remote-endpoint = <&lvds0_out>;
+ 				};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+index d7c7b91..ee2a9c5 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+@@ -40,8 +40,8 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
+-				reg = <0>;
++			port@1 {
++				reg = <1>;
+ 				thc63lvd1024_in: endpoint {
+ 					remote-endpoint = <&lvds0_out>;
+ 				};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-condor.dts b/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
+index b04f183..db55ff7 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
+@@ -61,8 +61,8 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
+-				reg = <0>;
++			port@1 {
++				reg = <1>;
+ 				thc63lvd1024_in: endpoint {
+ 					remote-endpoint = <&lvds0_out>;
+ 				};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+index adbfd8f..1203695 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+@@ -41,8 +41,8 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
+-				reg = <0>;
++			port@1 {
++				reg = <1>;
+ 				thc63lvd1024_in: endpoint {
+ 					remote-endpoint = <&lvds0_out>;
+ 				};
+-- 
+2.7.4
+

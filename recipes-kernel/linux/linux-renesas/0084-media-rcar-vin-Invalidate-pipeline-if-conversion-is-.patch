@@ -1,0 +1,48 @@
+From 899d3885a99b9d5eb3ceb92571a4c1ddacd1a00f Mon Sep 17 00:00:00 2001
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Date: Wed, 27 May 2020 14:16:48 +0200
+Subject: [PATCH] media: rcar-vin: Invalidate pipeline if conversion is not
+ possible on input formats
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Up until now the VIN was capable to convert any of its supported input mbus
+formats to any of it's supported output pixel formats. With the addition of
+RAW formats this is no longer true.
+
+This patch invalidates the pipeline by adding a check if given vin input
+format can be converted to supported output pixel format.
+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/platform/rcar-vin/rcar-dma.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index eb0e059..49bdc25 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -1361,11 +1361,15 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
+ 	case MEDIA_BUS_FMT_UYVY8_2X8:
+ 	case MEDIA_BUS_FMT_UYVY10_2X10:
+ 	case MEDIA_BUS_FMT_RGB888_1X24:
+-		vin->mbus_code = fmt.format.code;
++		break;
++	case MEDIA_BUS_FMT_SRGGB8_1X8:
++		if (vin->format.pixelformat != V4L2_PIX_FMT_SRGGB8)
++			return -EPIPE;
+ 		break;
+ 	default:
+ 		return -EPIPE;
+ 	}
++	vin->mbus_code = fmt.format.code;
+ 
+ 	switch (fmt.format.field) {
+ 	case V4L2_FIELD_TOP:
+-- 
+2.7.4
+

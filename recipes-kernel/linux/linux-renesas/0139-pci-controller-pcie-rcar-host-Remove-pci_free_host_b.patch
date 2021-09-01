@@ -1,0 +1,55 @@
+From 4bfc76ffa2e23f580279079138ee55f256c855db Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Wed, 28 Apr 2021 20:52:25 +0300
+Subject: [PATCH 44/61] pci: controller: pcie-rcar-host: Remove
+ pci_free_host_bridge calls
+
+There's no need to call pci_free_host_bridge because it's handled
+by the device manager (devm). This fixes "refcount_t: underflow;
+use-after-free" message when pci_free_host_bridge is called twice:
+by the rcar_pcie_probe callback, and by the device manager in case
+of an error.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/pci/controller/pcie-rcar-host.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
+index 1e4e48d..7f8886d 100644
+--- a/drivers/pci/controller/pcie-rcar-host.c
++++ b/drivers/pci/controller/pcie-rcar-host.c
+@@ -947,26 +947,23 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 
+ 	host->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
+ 	if (IS_ERR(host->pcie3v3)) {
+-		if (PTR_ERR(host->pcie3v3) == -EPROBE_DEFER) {
+-			pci_free_host_bridge(bridge);
++		if (PTR_ERR(host->pcie3v3) == -EPROBE_DEFER)
+ 			return -EPROBE_DEFER;
+-		}
++
+ 		dev_info(dev, "no pcie3v3 regulator found\n");
+ 	}
+ 
+ 	host->pcie1v8 = devm_regulator_get_optional(dev, "pcie1v8");
+ 	if (IS_ERR(host->pcie1v8)) {
+-		if (PTR_ERR(host->pcie1v8) == -EPROBE_DEFER) {
+-			pci_free_host_bridge(bridge);
++		if (PTR_ERR(host->pcie1v8) == -EPROBE_DEFER)
+ 			return -EPROBE_DEFER;
+-		}
++
+ 		dev_info(dev, "no pcie1v8 regulator found\n");
+ 	}
+ 
+ 	err = rcar_pcie_set_vpcie(host);
+ 	if (err) {
+ 		dev_err(dev, "failed to set pcie regulators\n");
+-		pci_free_host_bridge(bridge);
+ 		return err;
+ 	}
+ 
+-- 
+2.7.4
+

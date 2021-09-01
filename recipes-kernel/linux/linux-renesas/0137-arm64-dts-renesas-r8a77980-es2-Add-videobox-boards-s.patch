@@ -1,0 +1,162 @@
+From cbb4a473c38981e0c1aa17a3baa3a2bb1fa96cd1 Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Wed, 21 Oct 2020 16:38:32 +0300
+Subject: [PATCH 5/5] arm64: dts: renesas: r8a77980-es2: Add videobox boards
+ support
+
+---
+ .../boot/dts/renesas/r8a77980-es2-v3hsk-vb-4ch.dts      | 17 +++++++++++++++++
+ .../boot/dts/renesas/r8a77980-es2-v3hsk-vb-8ch.dts      | 17 +++++++++++++++++
+ .../boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl-8ch.dts | 17 +++++++++++++++++
+ .../dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-2x2.dts     | 17 +++++++++++++++++
+ .../boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-4.dts  | 17 +++++++++++++++++
+ .../boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-8.dts  | 17 +++++++++++++++++
+ 6 files changed, 102 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-4ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-8ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl-8ch.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-2x2.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-4.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-8.dts
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-4ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-4ch.dts
+new file mode 100644
+index 0000000..7002252
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-4ch.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 4ch Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-4ch.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 4ch Videobox board based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-8ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-8ch.dts
+new file mode 100644
+index 0000000..fc83d2c
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-8ch.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 8ch Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-8ch.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch Videobox board based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl-8ch.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl-8ch.dts
+new file mode 100644
+index 0000000..0515df9
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl-8ch.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 8ch GMSL Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-gmsl-8ch.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch GMSL Videobox based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-2x2.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-2x2.dts
+new file mode 100644
+index 0000000..c45870d
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-2x2.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 2x2ch GMSL2 Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-gmsl2-2x2.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 2x2ch GMSL2 Videobox based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-4.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-4.dts
+new file mode 100644
+index 0000000..9b5d549
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-4.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 4ch GMSL2 Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-gmsl2-4.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 4ch GMSL2 Videobox board based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-8.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-8.dts
+new file mode 100644
+index 0000000..446b648
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk-vb-gmsl2-8.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Renesas V3HSK 8ch GMSL2 Videobox based on r8a7798 ES2.0
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk-vb-gmsl2-8.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3HSK 8ch GMSL2 Videobox board based on r8a7798 ES2.0";
++};
+-- 
+2.7.4
+

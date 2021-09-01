@@ -1,0 +1,61 @@
+From 3ed955fc0ff1d3630448bd8265a03e2a2e4587be Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Thu, 24 Sep 2020 00:43:08 +0300
+Subject: [PATCH 14/22] iommu: ipmmu-vmsa: Initialize the whitelist before
+ registering the IPMMU
+
+This moves whitelist initialization before the IPMMU
+registration so that the whitelist can take effect.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/iommu/ipmmu-vmsa.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/iommu/ipmmu-vmsa.c b/drivers/iommu/ipmmu-vmsa.c
+index 4fc3208..2b83161 100644
+--- a/drivers/iommu/ipmmu-vmsa.c
++++ b/drivers/iommu/ipmmu-vmsa.c
+@@ -1551,6 +1551,19 @@ static int ipmmu_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++#ifdef CONFIG_IPMMU_VMSA_WHITELIST
++	/*
++	 * Set up whitelist
++	 */
++	if (mmu->features->whitelist && !ipmmu_is_root(mmu)) {
++		ret = ipmmu_whitelist_init(mmu);
++		if (ret) {
++			dev_err(&pdev->dev, "no valid IPMMU whitelist found\n");
++			return ret;
++		}
++	}
++#endif
++
+ 	/*
+ 	 * Register the IPMMU to the IOMMU subsystem in the following cases:
+ 	 * - R-Car Gen2 IPMMU (all devices registered)
+@@ -1580,19 +1593,6 @@ static int ipmmu_probe(struct platform_device *pdev)
+ #endif
+ 	}
+ 
+-#ifdef CONFIG_IPMMU_VMSA_WHITELIST
+-	/*
+-	 * Set up whitelist
+-	 */
+-	if (mmu->features->whitelist && !ipmmu_is_root(mmu)) {
+-		ret = ipmmu_whitelist_init(mmu);
+-		if (ret) {
+-			dev_err(&pdev->dev, "no valid IPMMU whitelist found\n");
+-			return ret;
+-		}
+-	}
+-#endif
+-
+ 	/*
+ 	 * We can't create the ARM mapping here as it requires the bus to have
+ 	 * an IOMMU, which only happens when bus_set_iommu() is called in
+-- 
+2.7.4
+

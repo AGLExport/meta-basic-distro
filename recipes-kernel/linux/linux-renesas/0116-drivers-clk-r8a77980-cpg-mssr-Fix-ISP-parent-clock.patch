@@ -1,0 +1,28 @@
+From 91d137d43fe2ad3f2841ab5061049bc6cd9436e9 Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Wed, 11 Nov 2020 20:04:50 +0300
+Subject: [PATCH 09/12] drivers: clk: r8a77980-cpg-mssr: Fix ISP parent clock
+
+Signed-off-by: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+---
+ drivers/clk/renesas/r8a77980-cpg-mssr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/renesas/r8a77980-cpg-mssr.c b/drivers/clk/renesas/r8a77980-cpg-mssr.c
+index 2f0d4fd..50789c9 100644
+--- a/drivers/clk/renesas/r8a77980-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a77980-cpg-mssr.c
+@@ -180,8 +180,8 @@ static const struct mssr_mod_clk r8a77980_mod_clks[] __initconst = {
+ 	DEF_MOD("vin0",			 811,	R8A77980_CLK_S2D1),
+ 	DEF_MOD("etheravb",		 812,	R8A77980_CLK_S3D2),
+ 	DEF_MOD("gether",		 813,	R8A77980_CLK_S3D2),
+-	DEF_MOD("isp1",			 814,	R8A77980_CLK_S3D1),
+-	DEF_MOD("isp0",			 817,	R8A77980_CLK_S3D1),
++	DEF_MOD("isp1",			 814,	R8A77980_CLK_S2D1),
++	DEF_MOD("isp0",			 817,	R8A77980_CLK_S2D1),
+ 	DEF_MOD("imr3",			 820,	R8A77980_CLK_S2D1),
+ 	DEF_MOD("imr2",			 821,	R8A77980_CLK_S2D1),
+ 	DEF_MOD("imr1",			 822,	R8A77980_CLK_S2D1),
+-- 
+2.7.4
+

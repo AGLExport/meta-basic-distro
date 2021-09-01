@@ -1,0 +1,110 @@
+From f4aa99644742bf753ffa2a7f7d01cc47a004364f Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Wed, 14 Apr 2021 22:54:52 +0300
+Subject: [PATCH 50/61] iio: st_sensors: Make accel, gyro, magn and pressure
+ probe shared
+
+Some IMUs may utilize existing library code for STMicro accelerometer,
+gyroscope, magnetometer and pressure. Let's share them via st_sensors.h.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/iio/accel/st_accel.h          |  4 ----
+ drivers/iio/gyro/st_gyro.h            |  4 ----
+ drivers/iio/magnetometer/st_magn.h    |  4 ----
+ drivers/iio/pressure/st_pressure.h    |  4 ----
+ include/linux/iio/common/st_sensors.h | 20 ++++++++++++++++++++
+ 5 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/iio/accel/st_accel.h b/drivers/iio/accel/st_accel.h
+index 181ebe7..f5b0b8b 100644
+--- a/drivers/iio/accel/st_accel.h
++++ b/drivers/iio/accel/st_accel.h
+@@ -62,10 +62,6 @@ enum st_accel_type {
+ #define LIS2DE12_ACCEL_DEV_NAME		"lis2de12"
+ #define LIS2HH12_ACCEL_DEV_NAME		"lis2hh12"
+ 
+-const struct st_sensor_settings *st_accel_get_settings(const char *name);
+-int st_accel_common_probe(struct iio_dev *indio_dev);
+-void st_accel_common_remove(struct iio_dev *indio_dev);
+-
+ #ifdef CONFIG_IIO_BUFFER
+ int st_accel_allocate_ring(struct iio_dev *indio_dev);
+ void st_accel_deallocate_ring(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/gyro/st_gyro.h b/drivers/iio/gyro/st_gyro.h
+index b385fe6..6537f5c 100644
+--- a/drivers/iio/gyro/st_gyro.h
++++ b/drivers/iio/gyro/st_gyro.h
+@@ -24,10 +24,6 @@
+ #define LSM330_GYRO_DEV_NAME		"lsm330_gyro"
+ #define LSM9DS0_GYRO_DEV_NAME		"lsm9ds0_gyro"
+ 
+-const struct st_sensor_settings *st_gyro_get_settings(const char *name);
+-int st_gyro_common_probe(struct iio_dev *indio_dev);
+-void st_gyro_common_remove(struct iio_dev *indio_dev);
+-
+ #ifdef CONFIG_IIO_BUFFER
+ int st_gyro_allocate_ring(struct iio_dev *indio_dev);
+ void st_gyro_deallocate_ring(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/magnetometer/st_magn.h b/drivers/iio/magnetometer/st_magn.h
+index 204b285..143b6fb 100644
+--- a/drivers/iio/magnetometer/st_magn.h
++++ b/drivers/iio/magnetometer/st_magn.h
+@@ -22,10 +22,6 @@
+ #define LIS2MDL_MAGN_DEV_NAME		"lis2mdl"
+ #define LSM9DS1_MAGN_DEV_NAME		"lsm9ds1_magn"
+ 
+-const struct st_sensor_settings *st_magn_get_settings(const char *name);
+-int st_magn_common_probe(struct iio_dev *indio_dev);
+-void st_magn_common_remove(struct iio_dev *indio_dev);
+-
+ #ifdef CONFIG_IIO_BUFFER
+ int st_magn_allocate_ring(struct iio_dev *indio_dev);
+ void st_magn_deallocate_ring(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/pressure/st_pressure.h b/drivers/iio/pressure/st_pressure.h
+index 5c746ff..9417b3b 100644
+--- a/drivers/iio/pressure/st_pressure.h
++++ b/drivers/iio/pressure/st_pressure.h
+@@ -41,10 +41,6 @@ static __maybe_unused const struct st_sensors_platform_data default_press_pdata
+ 	.drdy_int_pin = 1,
+ };
+ 
+-const struct st_sensor_settings *st_press_get_settings(const char *name);
+-int st_press_common_probe(struct iio_dev *indio_dev);
+-void st_press_common_remove(struct iio_dev *indio_dev);
+-
+ #ifdef CONFIG_IIO_BUFFER
+ int st_press_allocate_ring(struct iio_dev *indio_dev);
+ void st_press_deallocate_ring(struct iio_dev *indio_dev);
+diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
+index 33e9399..aa017b9 100644
+--- a/include/linux/iio/common/st_sensors.h
++++ b/include/linux/iio/common/st_sensors.h
+@@ -317,4 +317,24 @@ ssize_t st_sensors_sysfs_scale_avail(struct device *dev,
+ 
+ void st_sensors_dev_name_probe(struct device *dev, char *name, int len);
+ 
++/* Accelerometer */
++const struct st_sensor_settings *st_accel_get_settings(const char *name);
++int st_accel_common_probe(struct iio_dev *indio_dev);
++void st_accel_common_remove(struct iio_dev *indio_dev);
++
++/* Gyroscope */
++const struct st_sensor_settings *st_gyro_get_settings(const char *name);
++int st_gyro_common_probe(struct iio_dev *indio_dev);
++void st_gyro_common_remove(struct iio_dev *indio_dev);
++
++/* Magnetometer */
++const struct st_sensor_settings *st_magn_get_settings(const char *name);
++int st_magn_common_probe(struct iio_dev *indio_dev);
++void st_magn_common_remove(struct iio_dev *indio_dev);
++
++/* Pressure */
++const struct st_sensor_settings *st_press_get_settings(const char *name);
++int st_press_common_probe(struct iio_dev *indio_dev);
++void st_press_common_remove(struct iio_dev *indio_dev);
++
+ #endif /* ST_SENSORS_H */
+-- 
+2.7.4
+

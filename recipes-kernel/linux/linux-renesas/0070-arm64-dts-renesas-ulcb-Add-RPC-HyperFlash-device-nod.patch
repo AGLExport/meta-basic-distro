@@ -1,0 +1,81 @@
+From 05f5fb0c233df841a13cc2264d04d08185f21b90 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Mon, 4 Nov 2019 01:26:23 +0300
+Subject: [PATCH 21/23] arm64: dts: renesas: ulcb: Add RPC HyperFlash device
+ node
+
+This adds RPC HyperFlash device node along with
+its partitions to the ULCB device tree.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/ulcb.dtsi | 53 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+index 9fda41e..0fd3ce6 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+@@ -443,6 +443,59 @@
+ 	};
+ };
+ 
++&rpc0 {
++	status = "okay";
++
++	flash@0 {
++		compatible = "cfi-flash";
++		reg = <0>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			bootparam@0 {
++				reg = <0x00000000 0x040000>;
++				read-only;
++			};
++			bl2@00040000 {
++				reg = <0x00040000 0x140000>;
++				read-only;
++			};
++			cert_header_sa6@00180000 {
++				reg = <0x00180000 0x040000>;
++				read-only;
++			};
++			bl31@001C0000 {
++				reg = <0x001C0000 0x040000>;
++				read-only;
++			};
++			tee@00200000 {
++				reg = <0x00200000 0x440000>;
++				read-only;
++			};
++			uboot@00640000 {
++				reg = <0x00640000 0x0C0000>;
++				read-only;
++			};
++			uboot-env@00700000 {
++				reg = <0x00700000 0x040000>;
++				read-only;
++			};
++			dtb@00740000 {
++				reg = <0x00740000 0x080000>;
++			};
++			kernel@007C0000 {
++				reg = <0x007C0000 0x1400000>;
++			};
++			user@01BC0000 {
++				reg = <0x01BC0000 0x2440000>;
++			};
++		};
++	};
++};
++
+ &rwdt {
+ 	timeout-sec = <60>;
+ 	status = "okay";
+-- 
+2.7.4
+

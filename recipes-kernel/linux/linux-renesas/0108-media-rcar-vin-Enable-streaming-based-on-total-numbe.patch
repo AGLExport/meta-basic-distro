@@ -1,0 +1,29 @@
+From 80bcf6e085a1bb806969aa981f9be87ee39a0b8d Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Tue, 13 Oct 2020 13:53:09 +0300
+Subject: [PATCH 01/12] media: rcar-vin: Enable streaming based on total number
+ of buffers
+
+... not the number of buffers queued at the momoent of streamon command
+
+Signed-off-by: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+---
+ drivers/media/platform/rcar-vin/rcar-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index 3896a08..906cee0 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -1524,7 +1524,7 @@ static int rvin_start_streaming(struct vb2_queue *vq, unsigned int count)
+ 	int ret;
+ 
+ 	/* Continuous capture requires more buffers then there are HW slots */
+-	vin->continuous = count > HW_BUFFER_NUM;
++	vin->continuous = vq->num_buffers > HW_BUFFER_NUM;
+ 
+ 	/* We can't support continues mode for sequential field formats */
+ 	if (vin->format.field == V4L2_FIELD_SEQ_TB ||
+-- 
+2.7.4
+

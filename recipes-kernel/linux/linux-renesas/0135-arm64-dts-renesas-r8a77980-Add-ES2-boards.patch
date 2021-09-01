@@ -1,0 +1,118 @@
+From 0ede47b7cd4bd831f6f70412ecfad712086dd11b Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Sat, 17 Oct 2020 00:42:43 +0300
+Subject: [PATCH 3/5] arm64: dts: renesas: r8a77980: Add ES2 boards
+
+This backports r8a77980 ES2 support from BSP7.
+The imp_psc_00 node is removed in accordance
+with the latest documentation. The UIO support
+is dropped for now.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ arch/arm64/boot/dts/renesas/Makefile               |  2 ++
+ .../arm64/boot/dts/renesas/r8a77980-es2-condor.dts | 17 +++++++++++++
+ arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk.dts | 17 +++++++++++++
+ arch/arm64/boot/dts/renesas/r8a77980-es2.dtsi      | 29 ++++++++++++++++++++++
+ 4 files changed, 65 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-condor.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77980-es2.dtsi
+
+diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+index a12267e..e3d789d 100644
+--- a/arch/arm64/boot/dts/renesas/Makefile
++++ b/arch/arm64/boot/dts/renesas/Makefile
+@@ -29,6 +29,8 @@ dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-eagle-function.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-es1-eagle.dtb r8a77970-es1-eagle-function.dtb
+ dtb-$(CONFIG_ARCH_R8A77970) += r8a77970-es1-v3msk.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-condor.dtb
++dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-v3hsk.dtb
+ 
+ # overlays
+ DTC_FLAGS += -@
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-condor.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-condor.dts
+new file mode 100644
+index 0000000..87f7a7c
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-condor.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the Condor board on r8a7798 ES2.0
++ *
++ * Copyright (C) 2018 Renesas Electronics Corp.
++ * Copyright (C) 2018 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-condor.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas Condor board based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk.dts b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk.dts
+new file mode 100644
+index 0000000..154dddc
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2-v3hsk.dts
+@@ -0,0 +1,17 @@
++/*
++ * Device Tree Source for the V3H Starter Kit board on r8a7798 ES2.0
++ *
++ * Copyright (C) 2018 Renesas Electronics Corp.
++ * Copyright (C) 2018 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include "r8a77980-v3hsk.dts"
++#include "r8a77980-es2.dtsi"
++
++/ {
++	model = "Renesas V3H Starter Kit board based on r8a7798 ES2.0";
++};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-es2.dtsi b/arch/arm64/boot/dts/renesas/r8a77980-es2.dtsi
+new file mode 100644
+index 0000000..615ec3b
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77980-es2.dtsi
+@@ -0,0 +1,29 @@
++/*
++ * Device Tree Source for the r8a7798 ES2.0 SoC
++ *   (append to r8a7798 SoC ES1.0 SoC)
++ *
++ * Copyright (C) 2018 Renesas Electronics Corp.
++ * Copyright (C) 2018 Cogent Embedded, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++/ {
++	soc {
++		/delete-node/imr_03@fe890000;
++		/delete-node/imr_rtt_ims_03;
++
++		/delete-node/imp_psc_01;
++
++		imp_slimdma_00 {
++			compatible = "renesas,slim-impx5-dmac";
++			reg = <0 0xffa18000 0 0x1000>;
++			clocks = <&cpg CPG_MOD 524>;
++			power-domains = <&sysc R8A77980_PD_A2DP1>;
++		};
++
++		/* TBD: can fd channel 3 */
++	};
++};
+-- 
+2.7.4
+

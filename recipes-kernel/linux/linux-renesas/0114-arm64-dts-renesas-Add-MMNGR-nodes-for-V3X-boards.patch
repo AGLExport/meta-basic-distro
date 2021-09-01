@@ -1,0 +1,173 @@
+From a9cc3cd67851affb896fd694ba691f4f5a8cab23 Mon Sep 17 00:00:00 2001
+From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
+Date: Fri, 25 Sep 2020 23:50:13 +0300
+Subject: [PATCH 07/12] arm64: dts: renesas: Add MMNGR nodes for V3X boards
+
+---
+ arch/arm64/boot/dts/renesas/r8a77970-eagle.dts  | 29 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts  | 29 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a77980-condor.dts | 28 ++++++++++++++++++++++++
+ arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts  | 28 ++++++++++++++++++++++++
+ 4 files changed, 114 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+index 4988edf..969308b 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+@@ -76,6 +76,35 @@
+ 		reg = <0x0 0x48000000 0x0 0x38000000>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		/* device specific region for Lossy Decompression */
++		lossy_decompress: linux,lossy_decompress {
++			no-map;
++			reg = <0x00000000 0x7c000000 0x0 0x03000000>;
++		};
++
++
++		/* device specific region for contiguous allocations */
++		mmp_reserved: linux,multimedia {
++			compatible = "shared-dma-pool";
++			reusable;
++			reg = <0x00000000 0x7f000000 0x0 0x01000000>;
++		};
++	};
++
++	mmngr {
++		compatible = "renesas,mmngr";
++		memory-region = <&mmp_reserved>, <&lossy_decompress>;
++	};
++
++	mmngrbuf {
++		compatible = "renesas,mmngrbuf";
++	};
++
+ 	x1_clk: x1-clock {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+index ef2afb9..a897c4a 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77970-v3msk.dts
+@@ -62,6 +62,35 @@
+ 		reg = <0x0 0x48000000 0x0 0x78000000>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		/* device specific region for Lossy Decompression */
++		lossy_decompress: linux,lossy_decompress {
++			no-map;
++			reg = <0x00000000 0x7c000000 0x0 0x03000000>;
++		};
++
++
++		/* device specific region for contiguous allocations */
++		mmp_reserved: linux,multimedia {
++			compatible = "shared-dma-pool";
++			reusable;
++			reg = <0x00000000 0x7f000000 0x0 0x01000000>;
++		};
++	};
++
++	mmngr {
++		compatible = "renesas,mmngr";
++		memory-region = <&mmp_reserved>, <&lossy_decompress>;
++	};
++
++	mmngrbuf {
++		compatible = "renesas,mmngrbuf";
++	};
++
+ 	osc5_clk: osc5-clock {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-condor.dts b/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
+index c75116c..8bcc78a 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77980-condor.dts
+@@ -83,6 +83,34 @@
+ 		reg = <0 0x48000000 0 0x78000000>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		/* device specific region for Lossy Decompression */
++		lossy_decompress: linux,lossy_decompress {
++			no-map;
++			reg = <0x00000000 0x7c000000 0x0 0x03000000>;
++		};
++
++		/* device specific region for contiguous allocations */
++		mmp_reserved: linux,multimedia {
++			compatible = "shared-dma-pool";
++			reusable;
++			reg = <0x00000000 0x7f000000 0x0 0x01000000>;
++		};
++	};
++
++	mmngr {
++		compatible = "renesas,mmngr";
++		memory-region = <&mmp_reserved>, <&lossy_decompress>;
++	};
++
++	mmngrbuf {
++		compatible = "renesas,mmngrbuf";
++	};
++
+ 	vddq_vin01: regulator-1 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "VDDQ_VIN01";
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+index c0ca0c2..59182e8 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77980-v3hsk.dts
+@@ -64,6 +64,34 @@
+ 		reg = <0 0x48000000 0 0x78000000>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		/* device specific region for Lossy Decompression */
++		lossy_decompress: linux,lossy_decompress {
++			no-map;
++			reg = <0x00000000 0x7c000000 0x0 0x03000000>;
++		};
++
++		/* device specific region for contiguous allocations */
++		mmp_reserved: linux,multimedia {
++			compatible = "shared-dma-pool";
++			reusable;
++			reg = <0x00000000 0x7f000000 0x0 0x01000000>;
++		};
++	};
++
++	mmngr {
++		compatible = "renesas,mmngr";
++		memory-region = <&mmp_reserved>, <&lossy_decompress>;
++	};
++
++	mmngrbuf {
++		compatible = "renesas,mmngrbuf";
++	};
++
+ 	osc1_clk: osc1-clock {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+-- 
+2.7.4
+

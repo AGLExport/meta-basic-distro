@@ -1,0 +1,91 @@
+From f88d93675b81923b01b2acce9468553905381372 Mon Sep 17 00:00:00 2001
+From: Valentine Barshak <valentine.barshak@cogentembedded.com>
+Date: Thu, 27 May 2021 23:49:51 +0300
+Subject: [PATCH 61/61] media: i2c: imx219: Align default frame width to 32
+
+This aligns default frame width to 32 because
+R-Car VIN doesn't support unaligned frame width.
+While at if fix manufacture-specific registers
+access sequence. According to the IMX219 manual,
+0x05 written to 0x30eb should be followed by 0x0c.
+
+Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
+---
+ drivers/media/i2c/imx219.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+index 8a444cd..0ab7c35 100644
+--- a/drivers/media/i2c/imx219.c
++++ b/drivers/media/i2c/imx219.c
+@@ -148,12 +148,12 @@ struct imx219_mode {
+ /*
+  * Register sets lifted off the i2C interface from the Raspberry Pi firmware
+  * driver.
+- * 3280x2464 = mode 2, 1920x1080 = mode 1, 1640x1232 = mode 4, 640x480 = mode 7.
++ * 3264x2464 = mode 2, 1920x1080 = mode 1, 1640x1232 = mode 4, 640x480 = mode 7.
+  */
+-static const struct imx219_reg mode_3280x2464_regs[] = {
++static const struct imx219_reg mode_3264x2464_regs[] = {
+ 	{0x0100, 0x00},
+-	{0x30eb, 0x0c},
+ 	{0x30eb, 0x05},
++	{0x30eb, 0x0c},
+ 	{0x300a, 0xff},
+ 	{0x300b, 0xff},
+ 	{0x30eb, 0x05},
+@@ -163,15 +163,15 @@ static const struct imx219_reg mode_3280x2464_regs[] = {
+ 	{0x012a, 0x18},
+ 	{0x012b, 0x00},
+ 	{0x0164, 0x00},
+-	{0x0165, 0x00},
++	{0x0165, 0x08},
+ 	{0x0166, 0x0c},
+-	{0x0167, 0xcf},
++	{0x0167, 0xc7},
+ 	{0x0168, 0x00},
+ 	{0x0169, 0x00},
+ 	{0x016a, 0x09},
+ 	{0x016b, 0x9f},
+ 	{0x016c, 0x0c},
+-	{0x016d, 0xd0},
++	{0x016d, 0xc0},
+ 	{0x016e, 0x09},
+ 	{0x016f, 0xa0},
+ 	{0x0170, 0x01},
+@@ -188,7 +188,7 @@ static const struct imx219_reg mode_3280x2464_regs[] = {
+ 	{0x030c, 0x00},
+ 	{0x030d, 0x72},
+ 	{0x0624, 0x0c},
+-	{0x0625, 0xd0},
++	{0x0625, 0xc0},
+ 	{0x0626, 0x09},
+ 	{0x0627, 0xa0},
+ 	{0x455e, 0x00},
+@@ -470,18 +470,18 @@ static const u32 codes[] = {
+ static const struct imx219_mode supported_modes[] = {
+ 	{
+ 		/* 8MPix 15fps mode */
+-		.width = 3280,
++		.width = 3264,
+ 		.height = 2464,
+ 		.crop = {
+-			.left = 0,
++			.left = 8,
+ 			.top = 0,
+-			.width = 3280,
++			.width = 3264,
+ 			.height = 2464
+ 		},
+ 		.vts_def = IMX219_VTS_15FPS,
+ 		.reg_list = {
+-			.num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
+-			.regs = mode_3280x2464_regs,
++			.num_of_regs = ARRAY_SIZE(mode_3264x2464_regs),
++			.regs = mode_3264x2464_regs,
+ 		},
+ 	},
+ 	{
+-- 
+2.7.4
+
