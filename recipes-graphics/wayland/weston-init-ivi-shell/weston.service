@@ -1,7 +1,8 @@
 [Unit]
 Description=Weston Wayland Compositor
 RequiresMountsFor=/run
-After=systemd-user-sessions.service
+After=multi-user.target
+Wants=multi-user.target
 
 [Service]
 User=root
@@ -11,4 +12,7 @@ StandardError=journal
 PermissionsStartOnly=true
 IgnoreSIGPIPE=no
 
-ExecStart=/usr/bin/weston-start -v -e -- $OPTARGS
+ExecStart=/usr/bin/weston --tty=1 --idle-time=0 --log=/var/log/weston.log
+
+[Install]
+WantedBy=multi-user.target
