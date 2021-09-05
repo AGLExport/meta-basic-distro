@@ -9,4 +9,4 @@ EnvironmentFile=/etc/default/weston
 ExecStart=/usr/bin/ilmmanager
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=weston.service
