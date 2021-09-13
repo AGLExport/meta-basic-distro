@@ -1,0 +1,54 @@
+From 202a37fe35d1ba5d6fc20f637db66dcd5b74e2aa Mon Sep 17 00:00:00 2001
+From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+Date: Mon, 13 Sep 2021 23:51:05 +0900
+Subject: [PATCH] Disable lvds0
+
+Signed-off-by: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+---
+ arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts | 2 +-
+ arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts | 2 +-
+ arch/arm64/boot/dts/renesas/r8a77961-ulcb-kf.dts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts b/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts
+index c6fece178306..e8bffbe7336d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dts
+@@ -26,7 +26,7 @@ endpoint {
+ };
+ 
+ &lvds0 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	ports {
+ 		port@1 {
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts b/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
+index d2b4936b651a..e882b880a928 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77960-ulcb-kf.dts
+@@ -26,7 +26,7 @@ endpoint {
+ };
+ 
+ &lvds0 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	ports {
+ 		port@1 {
+diff --git a/arch/arm64/boot/dts/renesas/r8a77961-ulcb-kf.dts b/arch/arm64/boot/dts/renesas/r8a77961-ulcb-kf.dts
+index b3a59a2e7ab5..5f59177d176d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77961-ulcb-kf.dts
++++ b/arch/arm64/boot/dts/renesas/r8a77961-ulcb-kf.dts
+@@ -26,7 +26,7 @@ endpoint {
+ };
+ 
+ &lvds0 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	ports {
+ 		port@1 {
+-- 
+2.25.1
+
