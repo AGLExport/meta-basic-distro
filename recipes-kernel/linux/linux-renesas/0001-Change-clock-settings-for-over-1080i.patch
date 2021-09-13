@@ -1,0 +1,39 @@
+From 69de12c6028bd2fb23f15439baaa89393be5a807 Mon Sep 17 00:00:00 2001
+From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+Date: Sat, 4 Sep 2021 21:24:42 +0900
+Subject: [PATCH] Change clock settings for over 1080i
+
+---
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi | 2 +-
+ drivers/gpu/drm/rcar-du/rcar_du_crtc.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+index 16d791c15a75..62993c49eff1 100644
+--- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
++++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
+@@ -403,7 +403,7 @@ hdmi@3d {
+ 				adi,input-clock = "1x";
+ 				adi,input-style = <1>;
+ 				adi,input-justification = "evenly";
+-				adi,clock-delay = <1200>;
++				adi,clock-delay = <0xfffffb50>;
+ 
+ 				limit-frequency = <100000000>;
+ //				lower-refresh = <50>;
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+index 901e4de4f98b..fbd6ee1ee5e5 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+@@ -357,7 +357,7 @@ static void rcar_du_crtc_set_display_timing(struct rcar_du_crtc *rcrtc)
+ 
+ 	dev_dbg(rcrtc->dev->dev, "%s: ESCR 0x%08x\n", __func__, escr);
+ 
+-	rcar_du_crtc_write(rcrtc, rcrtc->index % 2 ? ESCR13 : ESCR02, escr);
++	rcar_du_crtc_write(rcrtc, rcrtc->index % 2 ? ESCR13 : ESCR02, (escr | ESCR_DCLKOINV));
+ 	rcar_du_crtc_write(rcrtc, rcrtc->index % 2 ? OTAR13 : OTAR02, 0);
+ 
+ 	/* Signal polarities */
+-- 
+2.25.1
+
