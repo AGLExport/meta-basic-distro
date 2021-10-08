@@ -16,6 +16,7 @@ SRC_URI_append = " \
 SRC_URI_append = " \
     file://0001-Disable-lvds0.patch \
     file://0001-Change-clock-settings-for-over-1080i.patch \
+    file://0001-Change-display-order-for-drgb-out.patch \
 "
 
 SRC_URI_append_h3ulcb = " file://ulcb.cfg"

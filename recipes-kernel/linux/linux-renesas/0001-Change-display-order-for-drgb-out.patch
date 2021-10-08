@@ -1,0 +1,99 @@
+From 0057b6b012b81b9537f3dcace9937a57d847c03e Mon Sep 17 00:00:00 2001
+From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+Date: Fri, 8 Oct 2021 15:45:26 +0900
+Subject: [PATCH] Change display order for drgb out
+
+Signed-off-by: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+---
+ arch/arm64/boot/dts/renesas/r8a77951.dtsi | 10 +++++-----
+ arch/arm64/boot/dts/renesas/r8a77960.dtsi | 10 +++++-----
+ arch/arm64/boot/dts/renesas/r8a77961.dtsi | 10 +++++-----
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a77951.dtsi b/arch/arm64/boot/dts/renesas/r8a77951.dtsi
+index 9b4f55c2c33b..45749dd619c2 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77951.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77951.dtsi
+@@ -3829,11 +3829,6 @@ ports {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				port@0 {
+-					reg = <0>;
+-					du_out_rgb: endpoint {
+-					};
+-				};
+ 				port@1 {
+ 					reg = <1>;
+ 					du_out_hdmi0: endpoint {
+@@ -3852,6 +3847,11 @@ du_out_lvds0: endpoint {
+ 						remote-endpoint = <&lvds0_in>;
+ 					};
+ 				};
++				port@0 {
++					reg = <0>;
++					du_out_rgb: endpoint {
++					};
++				};
+ 			};
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+index fae74f965d61..caaf51c6978b 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+@@ -3580,11 +3580,6 @@ ports {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				port@0 {
+-					reg = <0>;
+-					du_out_rgb: endpoint {
+-					};
+-				};
+ 				port@1 {
+ 					reg = <1>;
+ 					du_out_hdmi0: endpoint {
+@@ -3597,6 +3592,11 @@ du_out_lvds0: endpoint {
+ 						remote-endpoint = <&lvds0_in>;
+ 					};
+ 				};
++				port@0 {
++					reg = <0>;
++					du_out_rgb: endpoint {
++					};
++				};
+ 			};
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+index ec9aa3c5b56f..eeeee48ff01d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+@@ -3289,11 +3289,6 @@ ports {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+-				port@0 {
+-					reg = <0>;
+-					du_out_rgb: endpoint {
+-					};
+-				};
+ 				port@1 {
+ 					reg = <1>;
+ 					du_out_hdmi0: endpoint {
+@@ -3306,6 +3301,11 @@ du_out_lvds0: endpoint {
+ 						remote-endpoint = <&lvds0_in>;
+ 					};
+ 				};
++				port@0 {
++					reg = <0>;
++					du_out_rgb: endpoint {
++					};
++				};
+ 			};
+ 		};
+ 
+-- 
+2.25.1
+
