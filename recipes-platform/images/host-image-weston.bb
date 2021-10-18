@@ -7,7 +7,7 @@ inherit core-image features_check
 require host-image-renesas-base.inc
 require host-image-weston.inc
 
-CORE_IMAGE_BASE_INSTALL += "weston weston-init-ivi-shell "
+CORE_IMAGE_BASE_INSTALL += "weston weston-init-ivi-shell wayland-wsegl "
 #IMAGE_FEATURES += "splash package-management ssh-server-dropbear hwcodecs"
 
 IMAGE_INSTALL_append = " \
