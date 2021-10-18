@@ -1,7 +1,7 @@
-From b7410516f7a92cc89ed076f86b077afe2d393720 Mon Sep 17 00:00:00 2001
+From 6b5221606ed3009f9c485b2aa6f565755d4bcd5f Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Thu, 15 Nov 2018 23:55:17 +0300
-Subject: [PATCH 02/23] mtd: spi-nor: Add R-Car Gen3 RPC QSPI driver
+Subject: [PATCH 17/70] mtd: spi-nor: Add R-Car Gen3 RPC QSPI driver
 
 This is preliminary Renesas R-Car Gen3 RPC QSPI flash driver.
 The driver should support single and dual mode. Dual mode means

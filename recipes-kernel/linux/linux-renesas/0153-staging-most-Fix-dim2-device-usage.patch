@@ -1,7 +1,7 @@
-From 9ceea44900c0da051c8de3211b2ed60d4942e8df Mon Sep 17 00:00:00 2001
+From 65ba89c4f2e30f64224bed3aa8fb1d570a1b8934 Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Sun, 16 May 2021 02:27:16 +0300
-Subject: [PATCH 56/61] staging: most: Fix dim2 device usage
+Subject: [PATCH 65/70] staging: most: Fix dim2 device usage
 
 Since device structure has been removed from most interface by commit
 723de0f9171e ("staging: most: remove device from interface structure"),

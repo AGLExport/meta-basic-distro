@@ -1,7 +1,7 @@
-From 2cc724791408cef43f6fabdf208c85f937819a1f Mon Sep 17 00:00:00 2001
+From 43072e1a946729271aaeb346e17f7f42c0b24acb Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Tue, 10 Nov 2020 21:07:35 +0300
-Subject: [PATCH] arm64: boot: dts: rcar-gen3: Fix MLP IRQ order
+Subject: [PATCH 28/70] arm64: boot: dts: rcar-gen3: Fix MLP IRQ order
 
 The most driver expects the following IRQ order: MLB, AHB0.
 Move MLB IRQ 384 to the beginning of the IRQ list in the
@@ -13,10 +13,10 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
-index 0684772..fae74f9 100644
+index e05a748..9145a97 100644
 --- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
-@@ -1881,9 +1881,9 @@
+@@ -1925,9 +1925,9 @@
  		mlp: mlp@ec520000 {
  			compatible = "rcar,medialb-dim2";
  			reg = <0 0xec520000 0 0x800>;

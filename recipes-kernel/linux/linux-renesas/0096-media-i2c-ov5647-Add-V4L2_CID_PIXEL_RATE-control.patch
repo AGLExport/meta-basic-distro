@@ -1,7 +1,7 @@
-From 837ce8b4bfb776b7c7a9bae2da482c68d2adacf5 Mon Sep 17 00:00:00 2001
+From 0df768acb79a478c89a630c91351c227e3d72bde Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Fri, 30 Oct 2020 02:39:04 +0300
-Subject: [PATCH 04/15] media: i2c: ov5647: Add V4L2_CID_PIXEL_RATE control
+Subject: [PATCH 35/70] media: i2c: ov5647: Add V4L2_CID_PIXEL_RATE control
 
 This adds a read-only V4L2_CID_PIXEL_RATE control
 and sets pixel rate to 70MHz.

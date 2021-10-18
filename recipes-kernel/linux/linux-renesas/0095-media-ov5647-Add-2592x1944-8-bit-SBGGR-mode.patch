@@ -1,7 +1,7 @@
-From bd098bbd500973f5ff936dfc9d0331e32c2981b5 Mon Sep 17 00:00:00 2001
+From 28d26e5ea59783421028df87c13f90ba67241aec Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Fri, 30 Oct 2020 02:36:38 +0300
-Subject: [PATCH 03/15] media: ov5647: Add 2592x1944 8-bit SBGGR mode
+Subject: [PATCH 34/70] media: ov5647: Add 2592x1944 8-bit SBGGR mode
 
 This adds 2592x1944 8-bit SBGGR mode based on
 https://github.com/raspberrypi/linux.git tree

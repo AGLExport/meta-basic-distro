@@ -1,7 +1,7 @@
-From 225ac950254b2e57460c5cdaf2bf54d5f619a41b Mon Sep 17 00:00:00 2001
+From 4ac293163e8f4ba7b8f223b372e1a95cb410f7fb Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Thu, 12 Nov 2020 17:09:04 +0300
-Subject: [PATCH] media: platform: rcar-vin: add GREY format
+Subject: [PATCH 30/70] media: platform: rcar-vin: add GREY format
 
 This adds support for V4L2_PIX_FMT_GREY format
 
@@ -25,7 +25,7 @@ index 33f0873..8c17f36 100644
  
  static const struct rcar_csi2_format *rcsi2_code_to_fmt(unsigned int code)
 diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-index 5cd1ee9..443a5d3 100644
+index 4211c81..e3e486a 100644
 --- a/drivers/media/platform/rcar-vin/rcar-dma.c
 +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
 @@ -132,6 +132,7 @@
@@ -36,7 +36,7 @@ index 5cd1ee9..443a5d3 100644
  #define VNDMR_EXRGB		(1 << 8)
  #define VNDMR_BPSM		(1 << 4)
  #define VNDMR_ABIT		(1 << 2)
-@@ -730,6 +731,7 @@ static void rvin_crop_scale_comp(struct rvin_dev *vin)
+@@ -746,6 +747,7 @@ static void rvin_crop_scale_comp(struct rvin_dev *vin)
  	case V4L2_PIX_FMT_SGBRG8:
  	case V4L2_PIX_FMT_SGRBG8:
  	case V4L2_PIX_FMT_SRGGB8:
@@ -44,7 +44,7 @@ index 5cd1ee9..443a5d3 100644
  		stride /= 2;
  		break;
  	default:
-@@ -821,6 +823,7 @@ static int rvin_setup(struct rvin_dev *vin)
+@@ -837,6 +839,7 @@ static int rvin_setup(struct rvin_dev *vin)
  	case MEDIA_BUS_FMT_SGBRG8_1X8:
  	case MEDIA_BUS_FMT_SGRBG8_1X8:
  	case MEDIA_BUS_FMT_SRGGB8_1X8:
@@ -52,7 +52,7 @@ index 5cd1ee9..443a5d3 100644
  		vnmc |= VNMC_INF_RAW8;
  		break;
  	default:
-@@ -900,6 +903,13 @@ static int rvin_setup(struct rvin_dev *vin)
+@@ -916,6 +919,13 @@ static int rvin_setup(struct rvin_dev *vin)
  	case V4L2_PIX_FMT_SRGGB8:
  		dmr = 0;
  		break;
@@ -66,7 +66,7 @@ index 5cd1ee9..443a5d3 100644
  	default:
  		vin_err(vin, "Invalid pixelformat (0x%x)\n",
  			vin->format.pixelformat);
-@@ -1351,6 +1361,10 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
+@@ -1367,6 +1377,10 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
  		if (vin->format.pixelformat != V4L2_PIX_FMT_SRGGB8)
  			return -EPIPE;
  		break;
@@ -78,7 +78,7 @@ index 5cd1ee9..443a5d3 100644
  		return -EPIPE;
  	}
 diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-index 60cd0d0..acd192f 100644
+index 3cdb43e..832cb89 100644
 --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
 +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
 @@ -82,6 +82,10 @@ static const struct rvin_video_format rvin_formats[] = {

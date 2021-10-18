@@ -1,7 +1,7 @@
-From 1d49674b17473bf72cf092f31c1dbaa13fe157a6 Mon Sep 17 00:00:00 2001
+From c3d0d3334b1b45d87e5f290fca3668613fc5046d Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Wed, 28 Oct 2020 17:24:07 +0300
-Subject: [PATCH] media: v4l2-async: workaround for RCAR VIN
+Subject: [PATCH 27/70] media: v4l2-async: workaround for RCAR VIN
 
 This is a workaround for RCAR VIN drivers that use single media
 device registration (notification complete) for all 8 VINs, but

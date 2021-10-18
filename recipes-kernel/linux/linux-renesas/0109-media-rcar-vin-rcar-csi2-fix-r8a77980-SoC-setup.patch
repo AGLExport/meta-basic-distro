@@ -1,7 +1,7 @@
-From 7e5631c4670110d3356337116e31167491284c10 Mon Sep 17 00:00:00 2001
+From 8dd107364b2c8f469f35d71ec1017d296ece16c3 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Wed, 21 Oct 2020 15:23:26 +0300
-Subject: [PATCH 02/12] media: rcar-vin: rcar-csi2: fix r8a77980 SoC setup
+Subject: [PATCH 39/70] media: rcar-vin: rcar-csi2: fix r8a77980 SoC setup
 
 This fixes the r8a77980 RCAR CSI2 function.
 num_channels must be initialized to valid value in torder to setup VC

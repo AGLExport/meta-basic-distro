@@ -1,7 +1,7 @@
-From 9b4b07105072f46e80653794d012fcbb3b3e4c3a Mon Sep 17 00:00:00 2001
+From 43ece005006a1100275096b2f899c3300f6602d6 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Wed, 7 Oct 2020 16:40:24 +0300
-Subject: [PATCH] nvme: Workaround Samsung 970 Pro power state issues
+Subject: [PATCH 24/70] nvme: Workaround Samsung 970 Pro power state issues
 
 Sometimes Samsung 970/960 Pro NVME device just disappears.
 Looks like it drops into deep sleep mode during I/O.
@@ -17,10 +17,10 @@ Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3be3524..d8f66d1 100644
+index c1f34462..c25b722 100644
 --- a/drivers/nvme/host/pci.c
 +++ b/drivers/nvme/host/pci.c
-@@ -3198,6 +3198,10 @@ static const struct pci_device_id nvme_id_table[] = {
+@@ -3244,6 +3244,10 @@ static const struct pci_device_id nvme_id_table[] = {
  		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
  	{ PCI_DEVICE(0x1c5f, 0x0540),	/* Memblaze Pblaze4 adapter */
  		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },

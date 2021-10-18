@@ -1,7 +1,7 @@
-From d36be6c8056f42b5a837c109efadc81547c4b825 Mon Sep 17 00:00:00 2001
+From f18419c9fc7a979c5d2a3a4e69570b1a9aa9139e Mon Sep 17 00:00:00 2001
 From: Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>
 Date: Wed, 7 Sep 2016 22:55:37 +0300
-Subject: [PATCH 01/12] IMR driver - interim patch
+Subject: [PATCH 41/70] IMR driver - interim patch
 
 Signed-off-by: Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>
 ---

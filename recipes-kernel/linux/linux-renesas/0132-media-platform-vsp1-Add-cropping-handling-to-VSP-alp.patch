@@ -1,7 +1,7 @@
-From 3a1697dbca742c898e71f3fdd256d418a46d9c5a Mon Sep 17 00:00:00 2001
+From 13c34fe6990596cb3a8ed98e76b50709fdc051b6 Mon Sep 17 00:00:00 2001
 From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
 Date: Thu, 8 Oct 2020 15:57:54 +0300
-Subject: [PATCH 12/12] media: platform: vsp1: Add cropping handling to VSP
+Subject: [PATCH 51/70] media: platform: vsp1: Add cropping handling to VSP
  alpha-planes
 
 This is based on the original "Add cropping handling to VSP alpha-planes"

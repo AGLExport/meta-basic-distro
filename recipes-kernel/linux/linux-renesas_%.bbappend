@@ -6,22 +6,17 @@ COMPATIBLE_MACHINE_condor = "condor"
 COMPATIBLE_MACHINE_v3hsk = "v3hsk"
 
 SRC_URI_append = " \
-    file://nvme.cfg \
-    file://imr.cfg \
     file://disable-unused.cfg \
     file://enable.cfg \
     file://renesas.scc \
 "
 
-SRC_URI_append = " \
-    file://0001-Disable-lvds0.patch \
+SRC_URI_append_ulcb = " \
     file://0001-Change-clock-settings-for-over-1080i.patch \
     file://0001-Change-display-order-for-drgb-out.patch \
+    file://ulcb.cfg \
 "
 
-SRC_URI_append_h3ulcb = " file://ulcb.cfg"
-SRC_URI_append_m3ulcb = " file://ulcb.cfg"
-SRC_URI_append_m3nulcb = " file://ulcb.cfg"
 SRC_URI_append_salvator-x = " file://salvator-x.cfg"
 
 SRC_URI_append_rcar-gen3-v3x = " \
@@ -45,7 +40,6 @@ ULCB_KF_DTBO = " \
 "
 
 KERNEL_DEVICETREE_append_h3ulcb = " \
-    renesas/r8a77950-ulcb-kf.dtb \
     renesas/r8a77951-ulcb-kf.dtb \
     renesas/r8a779m1-ulcb-kf.dtb \
     ${ULCB_KF_DTBO} \

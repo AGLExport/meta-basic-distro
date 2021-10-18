@@ -1,7 +1,7 @@
-From beeaa780734a4e87470bf9f97f08be4c05172f06 Mon Sep 17 00:00:00 2001
+From d5e6cf87cb328a6df2a2233ac36b8f95e624950d Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Fri, 3 Jun 2016 23:04:20 +0300
-Subject: [PATCH 01/23] mtd: Add RPC HyperFlash driver
+Subject: [PATCH 16/70] mtd: Add RPC HyperFlash driver
 
 This adds RPC HyperFlash driver.
 

@@ -1,7 +1,7 @@
-From 4bfc76ffa2e23f580279079138ee55f256c855db Mon Sep 17 00:00:00 2001
+From d2a30626133f9a82b4cd15921770a780ce1779db Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Wed, 28 Apr 2021 20:52:25 +0300
-Subject: [PATCH 44/61] pci: controller: pcie-rcar-host: Remove
+Subject: [PATCH 52/70] pci: controller: pcie-rcar-host: Remove
  pci_free_host_bridge calls
 
 There's no need to call pci_free_host_bridge because it's handled
@@ -16,10 +16,10 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
-index 1e4e48d..7f8886d 100644
+index a24a725..803cdd8 100644
 --- a/drivers/pci/controller/pcie-rcar-host.c
 +++ b/drivers/pci/controller/pcie-rcar-host.c
-@@ -947,26 +947,23 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+@@ -949,26 +949,23 @@ static int rcar_pcie_probe(struct platform_device *pdev)
  
  	host->pcie3v3 = devm_regulator_get_optional(dev, "pcie3v3");
  	if (IS_ERR(host->pcie3v3)) {

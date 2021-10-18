@@ -1,7 +1,7 @@
-From ae116a2d1076c8251b83b599c16575fdb4daeeaa Mon Sep 17 00:00:00 2001
+From be1ee2287e5e76a4a628bc71d5ffc655eb6314ca Mon Sep 17 00:00:00 2001
 From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 Date: Thu, 5 Dec 2019 17:30:15 +0300
-Subject: [PATCH 23/23] MTD: renesas-rpc: fix dummy cycles
+Subject: [PATCH 23/70] MTD: renesas-rpc: fix dummy cycles
 
 Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 ---

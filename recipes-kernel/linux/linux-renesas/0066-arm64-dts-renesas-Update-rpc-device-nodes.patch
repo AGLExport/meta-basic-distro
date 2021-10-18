@@ -1,7 +1,7 @@
-From cb36516e7a85395664280c67cc2712b163b1c537 Mon Sep 17 00:00:00 2001
+From c1a75fee7d1629a2fd12e934141512dc6f21476b Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Thu, 20 May 2021 20:02:01 +0300
-Subject: [PATCH 8/8] arm64: dts: renesas: Update rpc device nodes
+Subject: [PATCH 22/70] arm64: dts: renesas: Update rpc device nodes
 
 This updates r8a77951 and r8a7796[015] RPC
 device node compatible properties according
@@ -16,10 +16,10 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  4 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/renesas/r8a77951.dtsi b/arch/arm64/boot/dts/renesas/r8a77951.dtsi
-index 24021b9..99f739e 100644
+index ab065d6..8daddc4 100644
 --- a/arch/arm64/boot/dts/renesas/r8a77951.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a77951.dtsi
-@@ -2028,7 +2028,7 @@
+@@ -2096,7 +2096,7 @@
  		};
  
  		rpc0: rpc0@ee200000 {
@@ -29,10 +29,10 @@ index 24021b9..99f739e 100644
  			      <0 0x08000000 0 0x04000000>,
  			      <0 0xee208000 0 0x100>;
 diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
-index 284e86c..be5bf7d 100644
+index a60064f..e05a748 100644
 --- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
-@@ -1958,7 +1958,7 @@
+@@ -2002,7 +2002,7 @@
  		};
  
  		rpc0: rpc0@ee200000 {
@@ -42,10 +42,10 @@ index 284e86c..be5bf7d 100644
  			      <0 0x08000000 0 0x04000000>,
  			      <0 0xee208000 0 0x100>;
 diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
-index 83a67c9..ec9aa3c 100644
+index 9cdd0c5..ef2cb77 100644
 --- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
-@@ -1846,7 +1846,7 @@
+@@ -1992,7 +1992,7 @@
  		};
  
  		rpc0: rpc0@ee200000 {
@@ -55,10 +55,10 @@ index 83a67c9..ec9aa3c 100644
  			      <0 0x08000000 0 0x04000000>,
  			      <0 0xee208000 0 0x100>;
 diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-index c8833e8..b7a0430 100644
+index b75ee88..ad327d2 100644
 --- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-@@ -1348,7 +1348,7 @@
+@@ -1417,7 +1417,7 @@
  		};
  
  		rpc0: rpc0@ee200000 {

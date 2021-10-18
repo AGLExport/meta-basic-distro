@@ -1,7 +1,7 @@
-From d6c3d3ea7bb552d34f2c618fc80c2c33de91b8d3 Mon Sep 17 00:00:00 2001
+From 2dbf8c9eb79a44342d987a310f49f7746f4c4f55 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Mon, 19 Oct 2020 01:47:41 +0300
-Subject: [PATCH] ASoC: PCM3168A: add TDM modes, merge ADC and DAC
+Subject: [PATCH 26/70] ASoC: PCM3168A: add TDM modes, merge ADC and DAC
 
 Also disable 16 bit format and enable at start
 

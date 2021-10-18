@@ -1,7 +1,7 @@
-From c752e65defe6718c20e1b25f4f34ab0d7ea0d0ee Mon Sep 17 00:00:00 2001
+From 406c2ac02f8f9e1ec699c099bcb682ec0d6488d6 Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Fri, 28 May 2021 02:56:58 +0300
-Subject: [PATCH 60/61] arm64: dts: renesas: ulcb-kf: Move ov5642 gpio pins to
+Subject: [PATCH 69/70] arm64: dts: renesas: ulcb-kf: Move ov5642 gpio pins to
  ov5642 node
 
 This moves CMOS camera pwdn and resetb GPIO pins
@@ -17,7 +17,7 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-index 8b112da..9fefd99 100644
+index 0834862..457cd50 100644
 --- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
 +++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
 @@ -757,6 +757,8 @@

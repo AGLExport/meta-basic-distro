@@ -1,7 +1,7 @@
-From 579ff3016bab6e0b8051990b227ef91881bca81d Mon Sep 17 00:00:00 2001
+From a492c97fb075f52c0b308af80839ca989763f200 Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Thu, 19 Nov 2020 20:21:43 +0300
-Subject: [PATCH 05/15] media: i2c: ov5647: Add test pattern control
+Subject: [PATCH 36/70] media: i2c: ov5647: Add test pattern control
 
 This adds V4L2_CID_TEST_PATTERN control support.
 

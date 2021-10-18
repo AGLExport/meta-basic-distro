@@ -1,7 +1,7 @@
-From e5e1b1b2ac09c64c81bb1595b8b1a5925d6da326 Mon Sep 17 00:00:00 2001
+From 2b21d4db6dfea6ec21181271114faa9cb104d0f5 Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Thu, 19 Nov 2020 17:17:08 +0300
-Subject: [PATCH 14/15] media: i2c: imx219: Set 8-bit SBGGR mode by default
+Subject: [PATCH 38/70] media: i2c: imx219: Set 8-bit SBGGR mode by default
 
 This sets 8-bit SBGGR mode, and enables [hv]flip controls by default.
 
@@ -11,7 +11,7 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index 099b4c2..8a444cd 100644
+index c55fd73..b7597f0 100644
 --- a/drivers/media/i2c/imx219.c
 +++ b/drivers/media/i2c/imx219.c
 @@ -670,7 +670,7 @@ static void imx219_set_default_format(struct imx219 *imx219)
@@ -23,7 +23,7 @@ index 099b4c2..8a444cd 100644
  	fmt->colorspace = V4L2_COLORSPACE_SRGB;
  	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
  	fmt->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
-@@ -1311,12 +1311,12 @@ static int imx219_init_controls(struct imx219 *imx219)
+@@ -1321,12 +1321,12 @@ static int imx219_init_controls(struct imx219 *imx219)
  			  IMX219_DGTL_GAIN_STEP, IMX219_DGTL_GAIN_DEFAULT);
  
  	imx219->hflip = v4l2_ctrl_new_std(ctrl_hdlr, &imx219_ctrl_ops,

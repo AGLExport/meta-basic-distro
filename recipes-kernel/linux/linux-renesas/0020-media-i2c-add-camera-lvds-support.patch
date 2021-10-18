@@ -1,7 +1,7 @@
-From b8a29b0183e8017d3dd60ac23d3a74cb0b01b19c Mon Sep 17 00:00:00 2001
+From b7c74ee55346e3a3e8d1a55a6caf873d5b5babaa Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Thu, 24 Sep 2020 01:16:20 +0300
-Subject: [PATCH] media: i2c: add camera lvds support
+Subject: [PATCH 13/70] media: i2c: add camera lvds support
 
 This adds GMSL1/GMSL2/FPDLink3 video support
 

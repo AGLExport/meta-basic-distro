@@ -11,8 +11,6 @@ patch 0017-gpio-pca953x-do-not-ignore-i2c-errors.patch
 patch 0018-phy-rcar-gen3-usb2-power-on-port-in-host-mode-to.patch
 patch 0019-media-i2c-add-ov5642-sensor-driver.patch
 patch 0020-media-i2c-add-camera-lvds-support.patch
-patch 0023-media-platform-rcar-vin-do-not-reset-IFMD-VIN.patch
-patch 0025-regulator-add-MAX2008X-camera-protector.patch
 patch 0038-iommu-ipmmu-vmsa-Add-r8a77980-support.patch
 patch 0050-mtd-Add-RPC-HyperFlash-driver.patch
 patch 0051-mtd-spi-nor-Add-R-Car-Gen3-RPC-QSPI-driver.patch
@@ -62,7 +60,6 @@ patch 0147-iio-st_sensors-Make-accel-gyro-magn-and-pressure-pro.patch
 patch 0148-iio-st_sensors-Add-lsm9ds0-IMU-support.patch
 patch 0149-dt-bindings-iio-st-st-sensors-Add-LSM9DS0-compatible.patch
 patch 0150-arm64-dts-renesas-ulcb-kf-Enable-LSM9DS0-IMU-and-GYR.patch
-patch 0151-arm64-dts-renesas-Add-r8a77961-ulcb-kf.dts.patch
 patch 0152-arm64-dts-renesas-Makefile-Add-r8a77980-es2-videobox.patch
 patch 0153-staging-most-Fix-dim2-device-usage.patch
 patch 0154-staging-most-dim2-Add-device_release-callback.patch

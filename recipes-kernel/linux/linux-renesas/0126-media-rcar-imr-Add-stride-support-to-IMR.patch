@@ -1,7 +1,7 @@
-From d5e183e75d886dba17706c2eba946ca69dcf79e1 Mon Sep 17 00:00:00 2001
+From 36c5da512fb05098e1c68e0f177c1e864a94c5a3 Mon Sep 17 00:00:00 2001
 From: Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>
 Date: Wed, 23 Jan 2019 08:07:38 -0800
-Subject: [PATCH 06/12] media: rcar-imr: Add stride support to IMR
+Subject: [PATCH 46/70] media: rcar-imr: Add stride support to IMR
 
 Add stride support to IMR
 

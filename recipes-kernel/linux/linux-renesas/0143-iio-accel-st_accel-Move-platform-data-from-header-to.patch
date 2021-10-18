@@ -1,7 +1,7 @@
-From 391e40da2e2269928183c0d1244a2367f3f7d183 Mon Sep 17 00:00:00 2001
+From 4310a63468c8e0080c937f6baa64013ff44fd245 Mon Sep 17 00:00:00 2001
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Date: Wed, 14 Apr 2021 22:54:48 +0300
-Subject: [PATCH 46/61] iio: accel: st_accel: Move platform data from header to
+Subject: [PATCH 56/70] iio: accel: st_accel: Move platform data from header to
  C file
 
 Platform data is solely used by one file. Don't share it with others.

@@ -1,7 +1,7 @@
-From 1dd6c5b1b93ab0ebf1c52a631faa84964fbcf973 Mon Sep 17 00:00:00 2001
+From 52bdc388beb01fdd48203ae94a7269407d108ea7 Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Fri, 28 May 2021 17:19:38 +0300
-Subject: [PATCH 55/61] arm64: dts: renesas: Makefile: Add r8a77980-es2
+Subject: [PATCH 64/70] arm64: dts: renesas: Makefile: Add r8a77980-es2
  videobox boards
 
 This adds device trees introduced by the commit a2a202e21f23
@@ -14,10 +14,10 @@ Signed-off-by: Valentine Barshak <valentine.barshak@cogentembedded.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index 85dd170..604acbe 100644
+index 3c94c0f..3062909 100644
 --- a/arch/arm64/boot/dts/renesas/Makefile
 +++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -89,6 +89,12 @@ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl2-8.dtb
+@@ -87,6 +87,12 @@ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk-vb-gmsl2-8.dtb
  dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-condor.dtb
  dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-es2-v3hsk.dtb
  

@@ -1,7 +1,7 @@
-From 245c2b4a412d6e44191711340fef0b890fd6edb2 Mon Sep 17 00:00:00 2001
+From a87f402b96a6f88e8f326d4976712317fd707146 Mon Sep 17 00:00:00 2001
 From: Masahiro Yamada <masahiroy@kernel.org>
 Date: Wed, 10 Mar 2021 20:08:24 +0900
-Subject: [PATCH 14/61] kbuild: remove unneeded -O option to dtc
+Subject: [PATCH 53/70] kbuild: remove unneeded -O option to dtc
 
 This piece of code converts the target suffix to the dtc -O option:
 

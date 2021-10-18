@@ -1,7 +1,7 @@
-From a4a63babc90d4fd305b5638af8a3e38529b8bf92 Mon Sep 17 00:00:00 2001
+From 039c28b52e40bed22a040b021c510360ac421c1a Mon Sep 17 00:00:00 2001
 From: Valentine Barshak <valentine.barshak@cogentembedded.com>
 Date: Thu, 29 Oct 2020 19:28:20 +0300
-Subject: [PATCH 02/15] media: ov5647: Set subdevice fwnode
+Subject: [PATCH 33/70] media: ov5647: Set subdevice fwnode
 
 This initializes subdevice fwnode since it's used
 by the V4L2 device OF endpoint parser, for example,

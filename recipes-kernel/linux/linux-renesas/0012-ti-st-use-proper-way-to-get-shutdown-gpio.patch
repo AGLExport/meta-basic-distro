@@ -1,7 +1,7 @@
-From f8fabeec26eb47d5d6850a87b0bb72624dcbe81e Mon Sep 17 00:00:00 2001
+From ee18a1fa8699cf936c8cef37bb4e7964168bf763 Mon Sep 17 00:00:00 2001
 From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 Date: Wed, 2 Aug 2017 17:39:56 +0300
-Subject: [PATCH] ti-st: use proper way to get shutdown gpio
+Subject: [PATCH 05/70] ti-st: use proper way to get shutdown gpio
 
 Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
  1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/misc/ti-st/st_kim.c b/drivers/misc/ti-st/st_kim.c
-index 54e2de1..5b6e3ca2 100644
+index 645af34..b87d304 100644
 --- a/drivers/misc/ti-st/st_kim.c
 +++ b/drivers/misc/ti-st/st_kim.c
 @@ -19,6 +19,8 @@
@@ -21,7 +21,7 @@ index 54e2de1..5b6e3ca2 100644
  
  #include <linux/skbuff.h>
  #include <linux/ti_wilink_st.h>
-@@ -713,18 +715,29 @@ static struct ti_st_plat_data *get_platform_data(struct device *dev)
+@@ -730,18 +732,29 @@ static struct ti_st_plat_data *get_platform_data(struct device *dev)
  
  	dt_pdata = kzalloc(sizeof(*dt_pdata), GFP_KERNEL);
  

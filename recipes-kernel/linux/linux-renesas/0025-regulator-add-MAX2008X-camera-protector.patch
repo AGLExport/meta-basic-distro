@@ -1,7 +1,7 @@
-From 6789026a568e02fff2755f80b68c700ca10b2199 Mon Sep 17 00:00:00 2001
+From e2cea5aee2076481299126e028f15101fea7cf27 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Wed, 23 Sep 2020 19:09:26 +0300
-Subject: [PATCH] regulator: add MAX2008X camera protector
+Subject: [PATCH 14/70] regulator: add MAX2008X camera protector
 
 This adds MAX20086-MAX20089 camera protector regulator
 

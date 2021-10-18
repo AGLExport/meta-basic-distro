@@ -1,7 +1,7 @@
-From 07a293cdf778dd092243b3451f031a17da0f52aa Mon Sep 17 00:00:00 2001
+From 58e856b87c5a0f478529221de08dbcb708d5e09f Mon Sep 17 00:00:00 2001
 From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
 Date: Tue, 6 Nov 2018 16:43:06 +0300
-Subject: [PATCH] clk: cs2000 add support for cs2300
+Subject: [PATCH 09/70] clk: cs2000 add support for cs2300
 
 Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 ---

@@ -1,7 +1,7 @@
-From dcda6157563b6b6117256ab66f270bfddfcfeeca Mon Sep 17 00:00:00 2001
+From a696365ab10a215a7a1763b5fe0a62951037bfb9 Mon Sep 17 00:00:00 2001
 From: Konstantin Kozhevnikov <Konstantin.Kozhevnikov@cogentembedded.com>
 Date: Tue, 14 Nov 2017 01:47:11 -0800
-Subject: [PATCH 02/12] media: rcar-imr: IMR driver updates for raw DL
+Subject: [PATCH 42/70] media: rcar-imr: IMR driver updates for raw DL
 
 IMR driver updates for raw DL
 

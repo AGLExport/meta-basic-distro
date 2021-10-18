@@ -1,7 +1,7 @@
-From 37f0859c9d8c500b4b86d3af41d5fc23ace484e4 Mon Sep 17 00:00:00 2001
+From 9af3d0aa803a08a6e62d57e6ab009a8a5c11b4af Mon Sep 17 00:00:00 2001
 From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 Date: Mon, 25 Sep 2017 07:16:25 +0300
-Subject: [PATCH] MOST: dim2: Renesas R-Car3 variant
+Subject: [PATCH 07/70] MOST: dim2: Renesas R-Car3 variant
 
 - R-Car H3 has 8 FPSB
 - remove not existing registers access

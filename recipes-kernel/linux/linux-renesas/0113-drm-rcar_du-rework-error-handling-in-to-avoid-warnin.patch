@@ -1,7 +1,7 @@
-From 3891a35bcb91cf673d3693fe2f0cf20816c58693 Mon Sep 17 00:00:00 2001
+From 90c40580a50b26cb567189f01f6e74bca9106d95 Mon Sep 17 00:00:00 2001
 From: Andrey Dolnikov <andrey.dolnikov@cogentembedded.com>
 Date: Thu, 22 Oct 2020 16:15:13 +0300
-Subject: [PATCH 06/12] drm/rcar_du: rework error handling in to avoid warnings
+Subject: [PATCH 40/70] drm/rcar_du: rework error handling in to avoid warnings
 
 This helps to avoid the following kernel warning on V3x boards:
 

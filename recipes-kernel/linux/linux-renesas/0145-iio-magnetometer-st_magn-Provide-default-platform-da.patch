@@ -1,7 +1,7 @@
-From 8e848a2022ea0b1df398f7278a201faccadf1379 Mon Sep 17 00:00:00 2001
+From ab59ea65b847fe2a457bc15c2c97dc8ca65f3d10 Mon Sep 17 00:00:00 2001
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Date: Wed, 14 Apr 2021 22:54:50 +0300
-Subject: [PATCH 48/61] iio: magnetometer: st_magn: Provide default platform
+Subject: [PATCH 58/70] iio: magnetometer: st_magn: Provide default platform
  data
 
 Provide default platform data for magnetometer in case it supports DRDY.

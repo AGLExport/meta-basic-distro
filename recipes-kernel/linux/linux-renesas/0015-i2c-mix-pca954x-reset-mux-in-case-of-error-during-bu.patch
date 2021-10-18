@@ -1,7 +1,7 @@
-From ffb56ab81acc29b5b28cea9c6b6a2c3a606a18d0 Mon Sep 17 00:00:00 2001
+From 4c5ea8121f6ac35cc6a090ffe4efd04795d5e8b5 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Thu, 21 May 2020 11:27:42 +0300
-Subject: [PATCH] i2c: mix: pca954x: reset mux in case of error during
+Subject: [PATCH 08/70] i2c: mix: pca954x: reset mux in case of error during
  bus (de)select
 
 Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>

@@ -1,7 +1,7 @@
-From d81c41809eeb76b3eb10ea0a5d303542ddbb2e9a Mon Sep 17 00:00:00 2001
+From fdbdb41c2b132d769fc43814acd41430753e1d81 Mon Sep 17 00:00:00 2001
 From: Eyal Reizer <eyalr@ti.com>
 Date: Thu, 23 May 2013 17:11:14 +0300
-Subject: [PATCH] ti-st: add device tree support
+Subject: [PATCH 01/70] ti-st: add device tree support
 
 When using device tree, driver configuration data need to be read from
 device node.

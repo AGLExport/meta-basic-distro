@@ -1,7 +1,7 @@
-From 2f6a00c50ca30c83f9a35183b5bc4b044c143fef Mon Sep 17 00:00:00 2001
+From 53029f8ef9ee23b77896ec98641bd53adf2b6f76 Mon Sep 17 00:00:00 2001
 From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 Date: Tue, 29 Oct 2019 18:52:52 +0300
-Subject: [PATCH] media: i2c: add ov5642 sensor driver
+Subject: [PATCH 12/70] media: i2c: add ov5642 sensor driver
 
 This adds ov5642 glue drivers
 
