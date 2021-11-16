@@ -6,8 +6,8 @@ IMAGE_INSTALL = " \
         kernel-devicetree \
         \
         packagegroup-container-host \
-        packagegroup-rcar-gen3-host-kmodules \
-        packagegroup-rcar-gen3-host-firmware \
+        packagegroup-container-bsp-host-kmodules \
+        packagegroup-container-bsp-host-firmware \
       "
 IMAGE_LINGUAS = " "
 
