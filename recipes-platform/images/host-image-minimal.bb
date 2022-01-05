@@ -17,7 +17,7 @@ inherit core-image
 
 # debug
 IMAGE_INSTALL_append = " \
-        nano \
+        nano miscfile \
       "
       
 #        packagegroup-agl-host-container-runtime 
