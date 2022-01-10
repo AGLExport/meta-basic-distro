@@ -1,20 +1,33 @@
-From 4f4e2f2fceabd3909ff0beb9fb851bc179c68ce5 Mon Sep 17 00:00:00 2001
+From cf2f586816d1d22e422b99bc6c1afa525d1e7437 Mon Sep 17 00:00:00 2001
 From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
 Date: Tue, 4 Jan 2022 23:52:31 +0900
 Subject: [PATCH] Add drm-lease client support to eglfs kms backend
+
+This patch is adding drm-lease-manager client support to Qt eglfs backend.
+When this patch is enable, Qt wayland compositor and Qt eglfs without
+compositor possible to use leased drm device.
+
+List of environment variable:
+
+QT_QPA_EGLFS_DRMLEASE :
+    When this variable is set, drm-lease-manager client support is enable.
+    Shall set drm lease device such as  `card0-LVDS-1`, `card0-HDMI-A-1 ` and etc.
+
+DLM_RUNTIME_PATH :
+    It use drm-lease-manager client, typically it need to set own.
 
 Signed-off-by: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
 ---
  cmake/3rdparty/kwin/FindLibdlmclient.cmake    | 125 ++++++++++++++++++
  src/gui/configure.cmake                       |   1 +
  .../eglfs_kms/CMakeLists.txt                  |   2 +
- .../eglfs_kms/qeglfskmsgbmdevice.cpp          |  36 +++--
+ .../eglfs_kms/qeglfskmsgbmdevice.cpp          |  43 ++++--
  .../eglfs_kms/qeglfskmsgbmdevice_p.h          |   4 +
- 5 files changed, 159 insertions(+), 9 deletions(-)
- create mode 100755 cmake/3rdparty/kwin/FindLibdlmclient.cmake
+ 5 files changed, 165 insertions(+), 10 deletions(-)
+ create mode 100644 cmake/3rdparty/kwin/FindLibdlmclient.cmake
 
 diff --git a/cmake/3rdparty/kwin/FindLibdlmclient.cmake b/cmake/3rdparty/kwin/FindLibdlmclient.cmake
-new file mode 100755
+new file mode 100644
 index 0000000000..7d4fc6716e
 --- /dev/null
 +++ b/cmake/3rdparty/kwin/FindLibdlmclient.cmake
@@ -177,10 +190,10 @@ index a20a4a084d..2af7904eb6 100644
  
  #### Keys ignored in scope 3:.:.:eglfs_kms-plugin.pro:<TRUE>:
 diff --git a/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice.cpp b/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice.cpp
-index b5b7811b79..f8222088f4 100644
+index b5b7811b79..1e77c72ee5 100644
 --- a/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice.cpp
 +++ b/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice.cpp
-@@ -56,32 +56,50 @@ Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
+@@ -56,32 +56,51 @@ Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
  QEglFSKmsGbmDevice::QEglFSKmsGbmDevice(QKmsScreenConfig *screenConfig, const QString &path)
      : QEglFSKmsDevice(screenConfig, path)
      , m_gbm_device(nullptr)
@@ -226,10 +239,11 @@ index b5b7811b79..f8222088f4 100644
          qErrnoWarning("Could not create GBM device");
 -        qt_safe_close(fd);
 -        fd = -1;
-+        qt_safe_close(drmfd);
 +        if (m_lease) {
-+            ::dlm_lease_fd(m_lease);
++            ::dlm_release_lease(m_lease);
 +            m_lease = nullptr;
++        } else {
++            qt_safe_close(drmfd);
 +        }
 +        drmfd = -1;
          return false;
@@ -240,6 +254,19 @@ index b5b7811b79..f8222088f4 100644
  
      m_eventReader.create(this);
  
+@@ -99,7 +118,11 @@ void QEglFSKmsGbmDevice::close()
+         m_gbm_device = nullptr;
+     }
+ 
+-    if (fd() != -1) {
++    if (m_lease) {
++        setFd(-1);
++        ::dlm_release_lease(m_lease);
++        m_lease = nullptr;
++    } else if (fd() != -1) {
+         qt_safe_close(fd());
+         setFd(-1);
+     }
 diff --git a/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice_p.h b/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice_p.h
 index bb67d800ee..b2d705800e 100644
 --- a/src/plugins/platforms/eglfs/deviceintegration/eglfs_kms/qeglfskmsgbmdevice_p.h
