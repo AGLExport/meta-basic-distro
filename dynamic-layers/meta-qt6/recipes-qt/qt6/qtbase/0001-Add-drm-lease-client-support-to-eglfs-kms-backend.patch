@@ -1,4 +1,4 @@
-From cf2f586816d1d22e422b99bc6c1afa525d1e7437 Mon Sep 17 00:00:00 2001
+From 85a85537b17742a839092bcc2a4684ab0bdb65d5 Mon Sep 17 00:00:00 2001
 From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
 Date: Tue, 4 Jan 2022 23:52:31 +0900
 Subject: [PATCH] Add drm-lease client support to eglfs kms backend
@@ -18,23 +18,24 @@ DLM_RUNTIME_PATH :
 
 Signed-off-by: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
 ---
- cmake/3rdparty/kwin/FindLibdlmclient.cmake    | 125 ++++++++++++++++++
+ cmake/3rdparty/kwin/FindLibdlmclient.cmake    | 127 ++++++++++++++++++
  src/gui/configure.cmake                       |   1 +
  .../eglfs_kms/CMakeLists.txt                  |   2 +
  .../eglfs_kms/qeglfskmsgbmdevice.cpp          |  43 ++++--
  .../eglfs_kms/qeglfskmsgbmdevice_p.h          |   4 +
- 5 files changed, 165 insertions(+), 10 deletions(-)
+ 5 files changed, 167 insertions(+), 10 deletions(-)
  create mode 100644 cmake/3rdparty/kwin/FindLibdlmclient.cmake
 
 diff --git a/cmake/3rdparty/kwin/FindLibdlmclient.cmake b/cmake/3rdparty/kwin/FindLibdlmclient.cmake
 new file mode 100644
-index 0000000000..7d4fc6716e
+index 0000000000..8dfac920ca
 --- /dev/null
 +++ b/cmake/3rdparty/kwin/FindLibdlmclient.cmake
-@@ -0,0 +1,125 @@
+@@ -0,0 +1,127 @@
 +#.rst:
 +# FindLibdlmclient
 +# -------
++# FindLibdlmclient.cmake is created based on FindLibinput.cmake
 +#
 +# Try to find libdlmclient on a Unix system.
 +#
@@ -66,6 +67,7 @@ index 0000000000..7d4fc6716e
 +#=============================================================================
 +# Copyright 2014 Alex Merry <alex.merry@kde.org>
 +# Copyright 2014 Martin Gräßlin <mgraesslin@kde.org>
++# Copyright 2022 Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
 +#
 +# Redistribution and use in source and binary forms, with or without
 +# modification, are permitted provided that the following conditions
@@ -154,8 +156,8 @@ index 0000000000..7d4fc6716e
 +
 +include(FeatureSummary)
 +set_package_properties(Libdlmclient PROPERTIES
-+    URL "http://www.freedesktop.org/wiki/Software/libinput/"
-+    DESCRIPTION "Library to handle input devices in Wayland compositors and to provide a generic X.Org input driver."
++    URL "https://git.automotivelinux.org/src/drm-lease-manager/"
++    DESCRIPTION "The DRM Lease Manager uses the DRM Lease feature, introduced in the Linux kernel version 4.15, to partition display controller output resources between multiple processes."
 +)
 diff --git a/src/gui/configure.cmake b/src/gui/configure.cmake
 index 0bf250eab6..b092b746c0 100644
