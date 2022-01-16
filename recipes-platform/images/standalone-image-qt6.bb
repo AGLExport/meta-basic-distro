@@ -27,6 +27,8 @@ IMAGE_INSTALL:append = " \
 # Qt6 support
 IMAGE_INSTALL:append = " \
     packagegroup-qt6-modules \
+    kms-config \
+    qt-env \
     "
 # Qt6 examples
 IMAGE_INSTALL:append = " \
