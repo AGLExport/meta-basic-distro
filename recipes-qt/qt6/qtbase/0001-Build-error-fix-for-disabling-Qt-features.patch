@@ -1,0 +1,94 @@
+From ba147c87df8d87335f8cbbc2eb26f4e3a71ec22d Mon Sep 17 00:00:00 2001
+From: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+Date: Fri, 21 Jan 2022 02:04:08 +0900
+Subject: [PATCH] Build error fix for disabling Qt features
+
+Signed-off-by: Naoto Yamaguchi <naoto.yamaguchi@aisin.co.jp>
+---
+ examples/embedded/CMakeLists.txt |  2 ++
+ examples/network/CMakeLists.txt  |  8 +++++---
+ examples/widgets/CMakeLists.txt  | 10 +++++++++-
+ 3 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/examples/embedded/CMakeLists.txt b/examples/embedded/CMakeLists.txt
+index 5f4bcc5628..31e47341ed 100644
+--- a/examples/embedded/CMakeLists.txt
++++ b/examples/embedded/CMakeLists.txt
+@@ -3,7 +3,9 @@
+ if(NOT TARGET Qt::Gui OR (NOT embedded AND NOT x11))
+     return()
+ endif()
++if(QT_FEATURE_texthtmlparser)
+ qt_internal_add_example(styleexample)
++endif()
+ qt_internal_add_example(raycasting)
+ qt_internal_add_example(flickable)
+ qt_internal_add_example(digiflip)
+diff --git a/examples/network/CMakeLists.txt b/examples/network/CMakeLists.txt
+index fd61e75aef..6e5d53c76d 100644
+--- a/examples/network/CMakeLists.txt
++++ b/examples/network/CMakeLists.txt
+@@ -16,19 +16,21 @@ if(TARGET Qt::Widgets)
+     qt_internal_add_example(loopback)
+     qt_internal_add_example(threadedfortuneserver)
+     qt_internal_add_example(googlesuggest)
+-    qt_internal_add_example(torrent)
+     qt_internal_add_example(multicastreceiver)
+     qt_internal_add_example(multicastsender)
+     qt_internal_add_example(fortuneclient)
+     qt_internal_add_example(fortuneserver)
+ endif()
++if(QT_FEATURE_texthtmlparser AND TARGET Qt::Widgets)
++    qt_internal_add_example(torrent)
++endif()
+ if(QT_FEATURE_processenvironment AND TARGET Qt::Widgets)
+     qt_internal_add_example(network-chat)
+ endif()
+-if(QT_FEATURE_ssl AND TARGET Qt::Widgets)
++if(QT_FEATURE_ssl AND QT_FEATURE_texthtmlparser AND TARGET Qt::Widgets)
+     qt_internal_add_example(securesocketclient)
+ endif()
+-if(QT_FEATURE_dtls AND TARGET Qt::Widgets)
++if(QT_FEATURE_dtls AND QT_FEATURE_texthtmlparser AND TARGET Qt::Widgets)
+     qt_internal_add_example(secureudpserver)
+     qt_internal_add_example(secureudpclient)
+ endif()
+diff --git a/examples/widgets/CMakeLists.txt b/examples/widgets/CMakeLists.txt
+index 753e3b8499..8fb6b72805 100644
+--- a/examples/widgets/CMakeLists.txt
++++ b/examples/widgets/CMakeLists.txt
+@@ -9,22 +9,30 @@ endif()
+ add_subdirectory(desktop)
+ add_subdirectory(dialogs)
+ add_subdirectory(effects)
++if(QT_FEATURE_texthtmlparser)
+ qt_internal_add_example(gallery)
++endif()
+ add_subdirectory(gestures)
+ add_subdirectory(graphicsview)
++if(QT_FEATURE_texthtmlparser)
+ add_subdirectory(itemviews)
++endif()
+ add_subdirectory(layouts)
++if(QT_FEATURE_texthtmlparser)
+ add_subdirectory(painting)
+ add_subdirectory(richtext)
++endif()
+ add_subdirectory(scroller)
+ add_subdirectory(tools)
+ add_subdirectory(touch)
+ add_subdirectory(tutorials)
++if(QT_FEATURE_texthtmlparser)
+ add_subdirectory(widgets)
++endif()
+ if(QT_FEATURE_draganddrop)
+     add_subdirectory(draganddrop)
+ endif()
+-if(QT_FEATURE_cursor) # special case
++if(QT_FEATURE_cursor AND QT_FEATURE_texthtmlparser) # special case
+     add_subdirectory(mainwindows)
+ endif()
+ if(QT_FEATURE_opengl AND TARGET Qt::Gui)
+-- 
+2.25.1
+
