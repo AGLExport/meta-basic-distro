@@ -19,20 +19,15 @@ IMAGE_INSTALL:append = " \
     packagegroup-qt-compositor \
     "
 
-# multimedia support
-IMAGE_INSTALL:append = " \
-    packagegroup-multimedia-userland \
-    "
-
 # Qt6 support
 IMAGE_INSTALL:append = " \
-    packagegroup-qt6-modules \
+    packagegroup-qt6-cluster \
     kms-config \
     qt-env \
     "
 # Qt6 examples
 IMAGE_INSTALL:append = " \
-    qtbase-examples qtwayland-examples qtquick3d-examples \
+    qtwayland-examples qtquick3d-examples \
     "
 
 IMAGE_LINGUAS = "ja-jp en-us"
