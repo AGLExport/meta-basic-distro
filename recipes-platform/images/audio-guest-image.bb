@@ -15,7 +15,7 @@ IMAGE_INSTALL:append = " \
 # Qt6 support
 IMAGE_INSTALL:append = " \
     packagegroup-qt6-modules \
-    kms-config \
+    kms-config-audio \
     qt-env-audio \
     "
 # Qt6 examples
