@@ -9,8 +9,8 @@ inherit features_check
 ### For kernel space 
 IMAGE_INSTALL:append = " \
     kernel-devicetree \
-    packagegroup-graphics-kernel-modules \
-    packagegroup-multimedia-kernel-modules \
+    packagegroup-graphics-kernel \
+    packagegroup-multimedia-kernel \
     "
 
 ### For user space
