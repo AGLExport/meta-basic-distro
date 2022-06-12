@@ -1,0 +1,13 @@
+[Unit]
+Description=Non volatile disk mount
+Before=local-fs.target
+
+[Mount]
+What=tmpfs
+Where=/var/volatile
+Type=tmpfs
+Options=mode=1777,nodev,nosuid,noexec,size=512K
+TimeoutSec=1s
+
+[Install]
+WantedBy=local-fs.target
