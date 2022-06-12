@@ -6,6 +6,7 @@ IMAGE_INSTALL = " \
         packagegroup-core-boot \
         ${CORE_IMAGE_EXTRA_INSTALL} \
         kernel-devicetree \
+        kernel-module-brd \
         \
         packagegroup-container-host \
         packagegroup-graphics-kernel \
@@ -13,6 +14,7 @@ IMAGE_INSTALL = " \
         \
         packagegroup-standard-library-set \
         dlt-daemon dlt-daemon-systemd \
+        mounter-nonvolatile mounter-volatile \
       "
 IMAGE_LINGUAS = " "
 
@@ -26,10 +28,16 @@ IMAGE_INSTALL_append = " \
       "
 
 # debug
-#IMAGE_INSTALL_append = " \
-#        nano \
-#      "
+IMAGE_INSTALL_append = " \
+        gptfdisk \
+        e2fsprogs \
+        optee-client \
+        systemd-bootchart \
+        systemd-analyze \
+        nano \
+      "
       
 #        packagegroup-agl-host-container-runtime 
 #        container-host-config 
 #        nano 
+#        util-linux libjpeg-turbo 
