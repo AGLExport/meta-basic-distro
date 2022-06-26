@@ -35,6 +35,7 @@ IMAGE_INSTALL_append = " \
         systemd-bootchart \
         systemd-analyze \
         nano \
+        grpc \
       "
       
 #        packagegroup-agl-host-container-runtime 
