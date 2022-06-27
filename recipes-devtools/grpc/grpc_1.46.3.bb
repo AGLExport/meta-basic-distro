@@ -10,7 +10,16 @@ DEPENDS = "c-ares protobuf protobuf-native protobuf-c protobuf-c-native openssl 
 DEPENDS:append:class-target = " googletest grpc-native "
 DEPENDS:append:class-nativesdk = " grpc-native "
 
-PACKAGE_BEFORE_PN = "${PN}-compiler"
+PACKAGE_BEFORE_PN = " \
+    ${PN}-compiler \
+    libgrpc-common \
+    libgrpc++_alts \
+    libgrpc++_error_details \
+    libgrpcpp_channelz \
+    libgrpc++_reflection \
+    libgrpc++.so \
+    libgrpc++_unsecure \
+    "
 
 RDEPENDS:${PN}-compiler = "${PN}"
 RDEPENDS:${PN}-dev:append:class-native = " ${PN}-compiler"
@@ -67,3 +76,29 @@ FILES:${PN}-compiler += " \
     ${bindir} \
     ${libdir}/libgrpc_plugin_support${SOLIBS} \
     "
+FILES:libgrpc-common = "\
+    ${libdir}/libaddress_sorting${SOLIBS} \
+    ${libdir}/libgpr${SOLIBS} \
+    ${libdir}/libupb${SOLIBS} \
+    "
+FILES:libgrpc++_alts = "\
+    ${libdir}/libgrpc++_alts${SOLIBS} \
+    "
+FILES:libgrpc++_error_details = "\
+    ${libdir}/libgrpc++_error_details${SOLIBS} \
+    "
+FILES:libgrpcpp_channelz = "\
+    ${libdir}/libgrpcpp_channelz${SOLIBS} \
+    "
+FILES:libgrpc++_reflection = "\
+    ${libdir}/libgrpc++_reflection${SOLIBS} \
+    "
+FILES:libgrpc++ = "\
+    ${libdir}/libgrpc++${SOLIBS} \
+    ${libdir}/libgrpc${SOLIBS} \
+    "
+FILES:libgrpc++_unsecure = "\
+    ${libdir}/libgrpc++_unsecure${SOLIBS} \
+    ${libdir}/libgrpc_unsecure${SOLIBS} \
+    "
+
