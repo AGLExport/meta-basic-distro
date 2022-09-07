@@ -1,6 +1,8 @@
 SUMMARY = "Qt6 based cluster guest image"
 LICENSE = "MIT"
 
+NO_RECOMMENDATIONS = "1"
+
 IMAGE_FEATURES_append = " read-only-rootfs"
 
 REQUIRED_DISTRO_FEATURES = "wayland"
