@@ -6,6 +6,9 @@ IMAGE_FSTYPES = "erofs"
 
 INSTALL_ROOTFS_IMAGE ??= "host-image-minimal-${MACHINE}${MACHINE_SUFFIX}.erofs-lz4hc"
 INSTALL_KERNEL_IMAGE ??= "Image"
+INSTALL_KERNELDTB_IMAGE ??= "r8a77951-ulcb-kf.dtb"
+
+EXTRA_IMAGECMD_erofs = "--all-root"
 
 inherit image
 
@@ -15,6 +18,7 @@ do_image() {
 
     cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_ROOTFS_IMAGE} ${IMAGE_ROOTFS}/
     cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_KERNEL_IMAGE} ${IMAGE_ROOTFS}/
+    cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_KERNELDTB_IMAGE} ${IMAGE_ROOTFS}/
 
     rm -rf ${IMGDEPLOYDIR}
     mkdir ${IMGDEPLOYDIR}
