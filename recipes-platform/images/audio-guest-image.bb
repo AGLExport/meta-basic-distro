@@ -3,6 +3,8 @@ LICENSE = "MIT"
 
 IMAGE_FEATURES_append = " read-only-rootfs"
 
+EXTRA_IMAGECMD_erofs = "--uid-offset=100000 --gid-offset=100000"
+
 REQUIRED_DISTRO_FEATURES = "wayland"
 
 inherit core-image
