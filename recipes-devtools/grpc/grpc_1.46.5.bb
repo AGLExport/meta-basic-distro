@@ -29,7 +29,7 @@ RDEPENDS:${PN}-dev:append:class-native = " ${PN}-compiler"
 # RDEPENDS:${PN}-dev += "${PN}-compiler"
 
 S = "${WORKDIR}/git"
-SRCREV_grpc = "53d69cc581c5b7305708587f4f1939278477c28a"
+SRCREV_grpc = "3f072f44cb8e984c09e1a5fed3d597982b54f92e"
 BRANCH = "v1.46.x"
 SRC_URI = "git://github.com/grpc/grpc.git;protocol=https;name=grpc;branch=${BRANCH} \
            file://0001-Revert-Changed-GRPCPP_ABSEIL_SYNC-to-GPR_ABSEIL_SYNC.patch \
