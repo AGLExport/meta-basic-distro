@@ -17,7 +17,7 @@ PACKAGE_BEFORE_PN = " \
     libgrpc++_error_details \
     libgrpcpp_channelz \
     libgrpc++_reflection \
-    libgrpc++.so \
+    libgrpc++ \
     libgrpc++_unsecure \
     "
 
