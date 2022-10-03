@@ -16,6 +16,8 @@ IMAGE_INSTALL = " \
         packagegroup-standard-library-set \
         dlt-daemon dlt-daemon-systemd \
         mounter-nonvolatile mounter-volatile \
+        \
+        libudev \
       "
 IMAGE_LINGUAS = " "
 
@@ -30,6 +32,8 @@ IMAGE_INSTALL_append = " \
 
 # debug
 IMAGE_INSTALL_append = " \
+        systemd-bootchart systemd-analyze \
+        gdb nano \
       "
 #        gptfdisk 
 #        e2fsprogs 

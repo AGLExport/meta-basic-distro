@@ -11,4 +11,5 @@ PR = "r0"
 
 RDEPENDS_packagegroup-standard-library-set = " \
     glib-2.0 \
+    cjson \
 "
