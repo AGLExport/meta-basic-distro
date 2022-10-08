@@ -6,7 +6,7 @@ IMAGE_FSTYPES = "erofs"
 
 INSTALL_ROOTFS_IMAGE ??= "cluster-guest-image-${MACHINE}${MACHINE_SUFFIX}.erofs-lz4hc"
 
-EXTRA_IMAGECMD_erofs = "--all-root"
+EXTRA_IMAGECMD:append_erofs = "--all-root"
 
 inherit image
 

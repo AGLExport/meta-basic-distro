@@ -8,7 +8,7 @@ INSTALL_ROOTFS_IMAGE ??= "host-image-minimal-${MACHINE}${MACHINE_SUFFIX}.erofs-l
 INSTALL_KERNEL_IMAGE ??= "Image"
 INSTALL_KERNELDTB_IMAGE ??= "r8a77951-ulcb-kf.dtb"
 
-EXTRA_IMAGECMD_erofs = "--all-root"
+EXTRA_IMAGECMD:append_erofs = "--all-root"
 
 inherit image
 
