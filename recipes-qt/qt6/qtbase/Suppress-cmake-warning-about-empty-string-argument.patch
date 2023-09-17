@@ -1,0 +1,46 @@
+From 49b60a07dc1d22c613f94348d7bef1d7a5cbf0ea Mon Sep 17 00:00:00 2001
+From: Alexey Edelev <alexey.edelev@qt.io>
+Date: Mon, 11 Apr 2022 15:35:52 +0200
+Subject: [PATCH] Suppress cmake warning about empty string argument
+
+When generating .pc files there is a warning when executing
+QtFinishPkgConfigFile.cmake:
+
+  Ignoring empty string ("") provided on the command line.
+
+This happens because the 'postfix' argument is a part of the script
+command line even if it's empty. It also makes no sense to check if
+'postfix' is empty using genex, use configuring-time check instead.
+
+Change-Id: If52d9634f4885caefb828976b3c99592a6db3d3c
+Reviewed-by: Alexandru Croitor <alexandru.croitor@qt.io>
+(cherry picked from commit 8eef32d460d06f823fa20b364e3ffe6ca5cd6977)
+Reviewed-by: Alexey Edelev <alexey.edelev@qt.io>
+---
+
+diff --git a/cmake/QtPkgConfigHelpers.cmake b/cmake/QtPkgConfigHelpers.cmake
+index 45bbcbed..21a0936 100644
+--- a/cmake/QtPkgConfigHelpers.cmake
++++ b/cmake/QtPkgConfigHelpers.cmake
+@@ -119,6 +119,12 @@
+         else()
+             set(postfix "")
+         endif()
++
++        set(extra_args "")
++        if(NOT postfix STREQUAL "")
++            list(APPEND extra_args "-DPOSTFIX=${postfix}")
++        endif()
++
+         qt_path_join(pc_step2_path "${build_dir}" ${step_prefix}_${config}_step2.pc)
+         qt_path_join(final_pc_path "${build_dir}" ${pkgconfig_file}${postfix}.pc)
+ 
+@@ -129,7 +135,7 @@
+             COMMAND ${CMAKE_COMMAND}
+                     "-DIN_FILE=${pc_step2_path}"
+                     "-DOUT_FILE=${final_pc_path}"
+-                    "$<$<BOOL:${postfix}>:-DPOSTFIX=${postfix}>"
++                    ${extra_args}
+                     -P "${QT_CMAKE_DIR}/QtFinishPkgConfigFile.cmake"
+             VERBATIM
+             COMMENT "Generating pc file for target ${target}"

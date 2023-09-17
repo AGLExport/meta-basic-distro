@@ -6,6 +6,9 @@ DEPENDS:remove:class-nativesdk = " drm-lease-manager"
 
 SRC_URI:append = " file://0001-Add-drm-lease-client-support-to-eglfs-kms-backend.patch"
 #SRC_URI:append = " file://0001-Build-error-fix-for-disabling-Qt-features.patch"
+SRC_URI:append = " file://CMake-build-generate-pkgconfig-for-public-modules.patch \
+                   file://Remove-the-LINK_LANGUAGE-genex-condition-when.patch \
+                 "
 
 PACKAGECONFIG_GRAPHICS = " gles2"
 QT_QPA_DEFAULT_PLATFORM = "wayland"
@@ -26,3 +29,11 @@ PACKAGECONFIG[textmarkdownreader] = "-DFEATURE_textmarkdownreader=ON,-DFEATURE_t
 PACKAGECONFIG[textmarkdownwriter] = "-DFEATURE_textmarkdownwriter=ON,-DFEATURE_textmarkdownwriter=OFF"
 PACKAGECONFIG[textodfwriter] = "-DFEATURE_textodfwriter=ON,-DFEATURE_textodfwriter=OFF"
 PACKAGECONFIG[vnc] = "-DFEATURE_vnc=ON,-DFEATURE_vnc=OFF"
+
+do_install:append () {
+    # HACK for gst qml plugin build
+    ln -sf ../libexec/moc ${D}${QT6_INSTALL_BINDIR}/moc
+    ln -sf ../libexec/uic ${D}${QT6_INSTALL_BINDIR}/uic
+    ln -sf ../libexec/rcc ${D}${QT6_INSTALL_BINDIR}/rcc
+}
+
