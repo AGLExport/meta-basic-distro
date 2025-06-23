@@ -9,6 +9,6 @@ IMAGE_INSTALL:append = " \
       "
 
 # debug
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
         nano \
         "

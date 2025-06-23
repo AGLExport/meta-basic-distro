@@ -1,10 +1,10 @@
 SUMMARY = "A small image just capable of allowing a device to boot."
 
-DEPEND = "host-image-minimal"
+DEPENDS = "host-image-minimal"
 
 IMAGE_FSTYPES = "erofs"
 
-INSTALL_ROOTFS_IMAGE ??= "host-image-minimal-${MACHINE}${MACHINE_SUFFIX}.erofs-lz4hc"
+INSTALL_ROOTFS_IMAGE ??= "host-image-minimal-${MACHINE}${MACHINE_SUFFIX}.rootfs.erofs-lz4hc"
 INSTALL_KERNEL_IMAGE ??= "Image"
 INSTALL_KERNELDTB_IMAGE ??= "r8a77951-ulcb-kf.dtb"
 
@@ -19,6 +19,8 @@ do_image() {
     cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_ROOTFS_IMAGE} ${IMAGE_ROOTFS}/
     cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_KERNEL_IMAGE} ${IMAGE_ROOTFS}/
     cp ${TOPDIR}/tmp/deploy/images/${MACHINE}/${INSTALL_KERNELDTB_IMAGE} ${IMAGE_ROOTFS}/
+
+    sha256sum -b ${IMAGE_ROOTFS}/${INSTALL_ROOTFS_IMAGE} | awk '{print $1}' > ${IMAGE_ROOTFS}/${INSTALL_ROOTFS_IMAGE}.hash
 
     rm -rf ${IMGDEPLOYDIR}
     mkdir ${IMGDEPLOYDIR}

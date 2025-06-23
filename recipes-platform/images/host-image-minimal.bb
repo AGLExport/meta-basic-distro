@@ -7,15 +7,9 @@ IMAGE_FEATURES:append = " read-only-rootfs"
 IMAGE_INSTALL = " \
         packagegroup-core-boot \
         ${CORE_IMAGE_EXTRA_INSTALL} \
-        kernel-module-brd \
-        \
-        packagegroup-container-host \
-        packagegroup-graphics-kernel \
-        packagegroup-multimedia-kernel \
         \
         packagegroup-standard-library-set \
-        dlt-daemon dlt-daemon-systemd \
-        mounter-nonvolatile mounter-volatile \
+        mounter-volatile \
         \
         libudev \
       "
@@ -26,23 +20,24 @@ LICENSE = "MIT"
 inherit core-image
 
 # container integ.
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
         miscfile \
+        cryptsetup \
+        test-data diskbench util-linux-taskset \
+        kernel-image-image \
       "
 
 # debug
-IMAGE_INSTALL_append = " \
-        systemd-bootchart systemd-analyze \
-        gdb nano \
+IMAGE_INSTALL:append = " \
       "
+#        systemd-bootchart systemd-analyze
+#        gdb nano
 #        gptfdisk 
 #        e2fsprogs 
 #        optee-client 
 #        systemd-bootchart 
 #        systemd-analyze 
 #        nano 
-#        libgrpc++_unsecure protobuf 
-#
 #        packagegroup-agl-host-container-runtime 
 #        container-host-config 
 #        nano 
